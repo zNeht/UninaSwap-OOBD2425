@@ -13,4 +13,6 @@ module com.example.uninaswapoobd2425 {
 
     opens com.example.uninaswapoobd2425 to javafx.fxml;
     exports com.example.uninaswapoobd2425;
+    exports com.example.uninaswapoobd2425.controller;
+    opens com.example.uninaswapoobd2425.controller to javafx.fxml;
 }
