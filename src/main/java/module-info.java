@@ -10,6 +10,7 @@ module com.example.uninaswapoobd2425 {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires java.sql;
 
     opens com.example.uninaswapoobd2425 to javafx.fxml;
     exports com.example.uninaswapoobd2425;
