@@ -1,3 +1,19 @@
 .login-background {
     -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #e8d0a9 0%, #144e5e 100%);
 }
+
+.close-button:hover {
+    -fx-text-fill: red;
+}
+
+.hovering-button:hover{
+    -fx-text-fill: #e8cd9a;
+}
+
+.title-button{
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 28px;
+    -fx-padding: 5 10 5 10;
+}
