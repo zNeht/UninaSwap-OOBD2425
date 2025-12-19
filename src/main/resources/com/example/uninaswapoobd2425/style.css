@@ -36,7 +36,6 @@
     -fx-padding: 0;
 }
 
-
 .title-button{
     -fx-background-color: transparent;
     -fx-text-fill: white;
@@ -57,6 +56,58 @@
     -fx-text-fill: #ffffff;
     -fx-font-size: 14px;
     -fx-padding: 0 0 0 5;
+}
+
+.homepage-background-color{
+    -fx-background-color: #144e5e;
+}
 
 
+.homepage-background-color2{
+    -fx-background-color: #246C63;
+}
+
+.search-bar {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 30;
+    -fx-border-radius: 30;
+    -fx-border-color: transparent;
+    -fx-prompt-text-fill: #999999;
+    -fx-text-fill: #333333;
+    -fx-padding: 5 15 5 15;
+    -fx-font-size: 14px;
+}
+
+.search-bar:focused {
+    -fx-background-color: #FFFFFF;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2); /* Leggera ombra */
+}
+
+/* Stile base del bottone */
+.profile-button {
+    -fx-background-color: transparent; /* Rende il bottone trasparente */
+    -fx-padding: 0;                    /* Rimuove i margini interni */
+    -fx-cursor: hand;                  /* Cambia il cursore in una manina */
+}
+
+/* Rimuove il colore di sfondo quando passi sopra col mouse */
+.profile-button:hover,
+.profile-button:focused,
+.profile-button:showing {
+    -fx-background-color: transparent;
+}
+
+/* QUESTA PARTE È FONDAMENTALE: Nasconde la freccetta standard */
+.profile-button > .arrow-button {
+    -fx-padding: 0;
+}
+
+.profile-button > .arrow-button > .arrow {
+    -fx-padding: 0;
+    -fx-shape: " ";   /* Cancella la forma geometrica della freccia */
+    -fx-background-color: transparent;
+}
+
+.avatar-circle{
+    -fx-fill: image-pattern("imgs/profileimage.jpg");
 }
