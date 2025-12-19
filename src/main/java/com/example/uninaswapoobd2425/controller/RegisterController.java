@@ -3,14 +3,13 @@ package com.example.uninaswapoobd2425.controller;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -18,15 +17,78 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.Statement;
+
+public class RegisterController {
+
+    @FXML
+    private TextField nameField;
+    @FXML
+    private TextField surnameField;
+    @FXML
+    private TextField emailField;
+    @FXML
+    private TextField usernameField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private PasswordField confirmPasswordField;
+
+    @FXML
+    private Label nameLabel;
+    @FXML
+    private Label surnameLabel;
+    @FXML
+    private Label emailLabel;
+    @FXML
+    private Label usernameLabel;
+    @FXML
+    private Label passwordLabel;
+    @FXML
+    private Label confirmPasswordLabel;
+
+    @FXML
+    public void initialize() {
+        setupFloatingLabel(nameField, nameLabel);
+        setupFloatingLabel(surnameField, surnameLabel);
+        setupFloatingLabel(emailField, emailLabel);
+        setupFloatingLabel(usernameField, usernameLabel);
+        setupFloatingLabel(passwordField, passwordLabel);
+        setupFloatingLabel(confirmPasswordField, confirmPasswordLabel);
+    }
+
+    private void setupFloatingLabel(TextField field, Label label) {
+
+        TranslateTransition moveUp = new TranslateTransition(Duration.millis(200), label);
+        moveUp.setToY(-25);
 
 
-public class LoginController {
+        TranslateTransition moveDown = new TranslateTransition(Duration.millis(200), label);
+        moveDown.setToY(0);
+
+
+        field.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+
+                moveUp.play();
+                label.setStyle("-fx-text-fill: #F0A500; -fx-font-size: 14px;");
+            } else {
+
+                if (field.getText().isEmpty()) {
+                    moveDown.play();
+                    label.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+                }
+            }
+        });
+
+        field.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal.isEmpty() && !(label.getTranslateY() == -25)) {
+                moveUp.play();
+                label.setStyle("-fx-text-fill: #F0A500; -fx-font-size: 12px;");
+            }
+        });
+    }
+
     @FXML
     void handleClose(ActionEvent event) {
         javafx.application.Platform.exit();
@@ -64,20 +126,21 @@ public class LoginController {
     }
 
     @FXML
-    protected void onRegisterLinkClick(ActionEvent event) {
+    protected void onLoginLinkClick(ActionEvent event) {
 
         Node sourceNode = (Node) event.getSource();
         Scene currentScene = sourceNode.getScene();
         Parent root = currentScene.getRoot();
 
+
         FadeTransition fadeOut = new FadeTransition(Duration.millis(300), root);
         fadeOut.setFromValue(1.0);
         fadeOut.setToValue(0.0);
 
-
         fadeOut.setOnFinished(e -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/uninaswapoobd2425/register.fxml"));
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/uninaswapoobd2425/login.fxml"));
                 Parent newRoot = loader.load();
 
                 newRoot.setOpacity(0);
@@ -87,6 +150,7 @@ public class LoginController {
                 Scene newScene = new Scene(newRoot);
                 newScene.setFill(Color.TRANSPARENT);
                 stage.setScene(newScene);
+
 
                 FadeTransition fadeIn = new FadeTransition(Duration.millis(300), newRoot);
                 fadeIn.setFromValue(0.0);
@@ -103,3 +167,4 @@ public class LoginController {
     }
 
 }
+

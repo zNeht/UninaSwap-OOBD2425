@@ -1,14 +1,41 @@
-.login-background {
-    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #e8d0a9 0%, #144e5e 100%);
-}
 
 .close-button:hover {
     -fx-text-fill: red;
 }
 
+.hovering-access-button:hover{
+    -fx-background-color: #f2dec0;
+    -fx-text-fill: black;
+}
+
 .hovering-button:hover{
     -fx-text-fill: #e8cd9a;
 }
+
+.hovering-register-button:hover{
+    -fx-text-fill: #f2dec0;
+}
+.starting-background{
+    -fx-background-radius: 30;
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #C4AC85 0%, #144e5e 100%); /*Oppure e8d0a9 se chiaro al posto di C4AC85 */
+}
+.access-buttons{
+    -fx-background-color: #f0c075;
+    -fx-background-radius: 30;
+    -fx-text-fill: #2b2b2b;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+.register-button{
+    -fx-text-fill: f0c075;
+    -fx-underline: false;
+    -fx-font-weight: bold;
+    -fx-font-size: 13;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
 
 .title-button{
     -fx-background-color: transparent;
@@ -16,4 +43,20 @@
     -fx-font-weight: bold;
     -fx-font-size: 28px;
     -fx-padding: 5 10 5 10;
+}
+
+.register-fields{
+    -fx-background-color: transparent; /* Rende lo sfondo del campo invisibile */
+    -fx-border-color: transparent transparent #ffffff transparent; /* Imposta solo il bordo inferiore a bianco */
+    -fx-border-width: 0px 0px 1px 0px; /* Definisce lo spessore della linea inferiore */
+    -fx-text-fill: #ffffff; /* Il testo che scrivi sarà bianco */
+    -fx-prompt-text-fill: #dddddd; /* Il testo di aiuto (prompt) sarà grigio chiaro */
+}
+
+.register-labels{
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-padding: 0 0 0 5;
+
+
 }
