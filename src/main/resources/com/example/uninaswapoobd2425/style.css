@@ -45,11 +45,11 @@
 }
 
 .register-fields{
-    -fx-background-color: transparent; /* Rende lo sfondo del campo invisibile */
-    -fx-border-color: transparent transparent #ffffff transparent; /* Imposta solo il bordo inferiore a bianco */
-    -fx-border-width: 0px 0px 1px 0px; /* Definisce lo spessore della linea inferiore */
-    -fx-text-fill: #ffffff; /* Il testo che scrivi sarà bianco */
-    -fx-prompt-text-fill: #dddddd; /* Il testo di aiuto (prompt) sarà grigio chiaro */
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #ffffff transparent;
+    -fx-border-width: 0px 0px 1px 0px;
+    -fx-text-fill: #ffffff;
+    -fx-prompt-text-fill: #dddddd;
 }
 
 .register-labels{
@@ -83,31 +83,10 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2); /* Leggera ombra */
 }
 
-/* Stile base del bottone */
-.profile-button {
-    -fx-background-color: transparent; /* Rende il bottone trasparente */
-    -fx-padding: 0;                    /* Rimuove i margini interni */
-    -fx-cursor: hand;                  /* Cambia il cursore in una manina */
+.avatar-container {
+    -fx-cursor: hand;
 }
 
-/* Rimuove il colore di sfondo quando passi sopra col mouse */
-.profile-button:hover,
-.profile-button:focused,
-.profile-button:showing {
-    -fx-background-color: transparent;
-}
-
-/* QUESTA PARTE È FONDAMENTALE: Nasconde la freccetta standard */
-.profile-button > .arrow-button {
-    -fx-padding: 0;
-}
-
-.profile-button > .arrow-button > .arrow {
-    -fx-padding: 0;
-    -fx-shape: " ";   /* Cancella la forma geometrica della freccia */
-    -fx-background-color: transparent;
-}
-
-.avatar-circle{
-    -fx-fill: image-pattern("imgs/profileimage.jpg");
+.avatar-container:hover {
+    -fx-opacity: 0.85;
 }

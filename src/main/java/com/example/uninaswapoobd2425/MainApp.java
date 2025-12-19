@@ -16,7 +16,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("login.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("homepage.fxml"));
         Parent root = fxmlLoader.load();
 
         root.setOnMousePressed(event -> {
