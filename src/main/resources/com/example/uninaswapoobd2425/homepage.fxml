@@ -16,100 +16,110 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" styleClass="homepage-background-color2" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uninaswapoobd2425.controller.homepageController">
-   <left>
-      <VBox prefHeight="615.0" prefWidth="209.0" styleClass="homepage-background-color" stylesheets="@style.css" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets top="3.0" />
-         </BorderPane.margin>
-         <children>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Tipi">
-               <font>
-                  <Font name="Segoe UI Bold" size="28.0" />
-               </font>
-            </Text>
-            <HBox prefHeight="100.0" prefWidth="200.0">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" styleClass="homepage-background-main-color" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uninaswapoobd2425.controller.homepageController">
+   <children>
+      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1260.0" styleClass="homepage-background-color2" stylesheets="@style.css">
+         <left>
+            <VBox prefHeight="595.0" prefWidth="0.0" styleClass="homepage-background-elements-color" stylesheets="@style.css" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets top="3.0" />
+               </BorderPane.margin>
                <children>
-                  <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </HBox>
-         </children>
-         <padding>
-            <Insets left="20.0" top="10.0" />
-         </padding></VBox>
-   </left>
-   <top>
-      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" styleClass="homepage-background-color" BorderPane.alignment="CENTER">
-         <children>
-            <ImageView fitHeight="101.0" fitWidth="210.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@imgs/logoUnina.png" />
-               </image>
-            </ImageView>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="0.5">
-               <children>
-                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Unina">
+                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Tipi">
                      <font>
-                        <Font name="Segoe UI Bold" size="48.0" />
+                        <Font name="Segoe UI Bold" size="28.0" />
                      </font>
                   </Text>
-                  <Text fill="#e8cd9a" strokeType="OUTSIDE" strokeWidth="0.0" text="Swap">
-                     <font>
-                        <Font size="48.0" />
-                     </font>
-                  </Text>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <ImageView fitHeight="150.0" fitWidth="103.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </HBox>
                </children>
-            </HBox>
-            <Region prefHeight="101.0" prefWidth="55.0" />
-            <StackPane prefHeight="101.0" prefWidth="462.0">
+               <padding>
+                  <Insets left="20.0" top="10.0" />
+               </padding>
+            </VBox>
+         </left>
+         <top>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" styleClass="homepage-background-elements-color" BorderPane.alignment="CENTER">
                <children>
-                  <TextField prefHeight="25.0" prefWidth="505.0" promptText="Cerca" styleClass="search-bar" />
-               </children>
-            </StackPane>
-            <Region prefHeight="101.0" prefWidth="55.0" />
-            <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="178.0" styleClass="access-buttons" text="+ Annuncio">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor></Button>
-            <Region prefHeight="101.0" prefWidth="63.0" />
-            <StackPane fx:id="avatarContainer" onMouseClicked="#openProfileMenu" prefHeight="90.0" prefWidth="90.0" styleClass="avatar-container">
-               <children>
-                  <ImageView fx:id="avatarImage" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@imgs/prov.png" />
-                     </image></ImageView>
-               </children>
-            </StackPane>
-            <Region prefHeight="101.0" prefWidth="70.0" />
-            <HBox prefHeight="101.0" prefWidth="126.0">
-               <children>
-                  <Button mnemonicParsing="false" stylesheets="@style.css" text="—">
-                     <styleClass>
-                        <String fx:value="title-button" />
-                        <String fx:value="hovering-button" />
-                     </styleClass>
+                        <Image url="@imgs/arrowLogoUninaGold.png" />
+                     </image>
+                  </ImageView>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="0.5">
+                     <children>
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Unina">
+                           <font>
+                              <Font name="Segoe UI Bold" size="48.0" />
+                           </font>
+                        </Text>
+                        <Text fill="#e8cd9a" strokeType="OUTSIDE" strokeWidth="0.0" text="Swap">
+                           <font>
+                              <Font size="48.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <Region prefHeight="101.0" prefWidth="55.0" />
+                  <StackPane prefHeight="101.0" prefWidth="462.0">
+                     <children>
+                        <TextField prefHeight="25.0" prefWidth="505.0" promptText="Cerca" styleClass="search-bar" />
+                     </children>
+                  </StackPane>
+                  <Region prefHeight="101.0" prefWidth="63.0" />
+                  <Button mnemonicParsing="false" prefHeight="43.0" prefWidth="153.0" styleClass="announce-buttons" text="+ Annuncio">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
                   </Button>
-                  <Button mnemonicParsing="false" stylesheets="@style.css" text="✕">
-                     <styleClass>
-                        <String fx:value="close-button" />
-                        <String fx:value="title-button" />
-                     </styleClass>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
+                  <Region prefHeight="101.0" prefWidth="40.0" />
+                  <StackPane fx:id="avatarContainer" onMouseClicked="#openProfileMenu" prefHeight="90.0" prefWidth="90.0" styleClass="avatar-container">
+                     <children>
+                        <ImageView fx:id="avatarImage" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imgs/prov.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </StackPane>
+                  <Region prefHeight="101.0" prefWidth="30.0" />
+                  <HBox prefHeight="101.0" prefWidth="117.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#handleMinimize" stylesheets="@style.css" text="—">
+                           <styleClass>
+                              <String fx:value="title-button" />
+                              <String fx:value="hovering-button" />
+                           </styleClass>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#handleClose" stylesheets="@style.css" text="✕">
+                           <styleClass>
+                              <String fx:value="close-button" />
+                              <String fx:value="title-button" />
+                           </styleClass>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                     </children>
+                  </HBox>
                </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
             </HBox>
-         </children>
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
-      </HBox>
-   </top>
-   <right>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="homepage-background-color2" stylesheets="@style.css" BorderPane.alignment="CENTER" />
-   </right>
-</BorderPane>
+         </top>
+         <center>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="homepage-background-center-color" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+   </children>
+</StackPane>

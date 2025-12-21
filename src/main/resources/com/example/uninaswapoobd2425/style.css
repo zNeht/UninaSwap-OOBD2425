@@ -58,13 +58,18 @@
     -fx-padding: 0 0 0 5;
 }
 
-.homepage-background-color{
+.homepage-background-main-color{
+    -fx-background-color: #144e5e;
+    -fx-background-radius: 30;
+}
+.homepage-background-elements-color{
     -fx-background-color: #144e5e;
 }
 
-
-.homepage-background-color2{
+.homepage-background-center-color{
     -fx-background-color: #246C63;
+    -fx-background-radius: 20;
+
 }
 
 .search-bar {
@@ -89,4 +94,12 @@
 
 .avatar-container:hover {
     -fx-opacity: 0.85;
+}
+
+.announce-buttons{
+    -fx-background-color: #f0c075;
+    -fx-background-radius: 30;
+    -fx-text-fill: #2b2b2b;
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
 }
