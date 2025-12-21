@@ -59,17 +59,38 @@
 }
 
 .homepage-background-main-color{
-    -fx-background-color: #144e5e;
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #C4AC85 0%, #144e5e 100%);
     -fx-background-radius: 30;
 }
 .homepage-background-elements-color{
-    -fx-background-color: #144e5e;
+    -fx-background-color: transparent;
 }
 
 .homepage-background-center-color{
-    -fx-background-color: #246C63;
+    -fx-background-color: rgba(0, 0, 0, 0.3);
     -fx-background-radius: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 0);
 
+}
+.menu-btn {
+    -fx-background-color: transparent; /* Di base è trasparente */
+    -fx-transition: all 0.3s;
+    -fx-alignment: center;
+}
+
+.menu-btn:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.20);
+    -fx-background-radius: 15;
+}
+.menu-btn .image-view {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 2, 0, 0, 0);
+}
+
+
+.separator .line {
+    -fx-border-color: #246C63;
+    -fx-border-width: 1px;
+    -fx-background-color: transparent;
 }
 
 .search-bar {
@@ -82,6 +103,8 @@
     -fx-padding: 5 15 5 15;
     -fx-font-size: 14px;
 }
+
+
 
 .search-bar:focused {
     -fx-background-color: #FFFFFF;
@@ -102,4 +125,96 @@
     -fx-text-fill: #2b2b2b;
     -fx-font-weight: bold;
     -fx-font-size: 20px;
+}
+
+/*Menu a tendina */
+
+.profile-menu {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #C4AC85 0%, #144e5e 100%);
+    -fx-background-radius: 22;
+    -fx-background-insets: 0;
+    -fx-padding: 10 10;
+    -fx-border-radius: 22;
+    -fx-border-color: rgba(15, 23, 42, 0.12);
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(15,23,42,0.18), 30, 0.2, 0, 10);
+}
+
+.profile-menu-item {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-color: rgba(15, 23, 42, 0.08);
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 14 12;
+    -fx-text-fill: #101828;
+    -fx-font-size: 15px;
+    -fx-font-weight: 500;
+    -fx-alignment: CENTER_LEFT;
+    -fx-cursor: hand;
+
+}
+.profile-menu-item-title {
+    -fx-text-fill: #f8f8f8;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-font-family: Segui Ui;
+}
+.profile-menu-item-last {
+    -fx-border-width: 0;
+}
+
+.profile-menu-item:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.20);
+    -fx-background-radius: 15;
+}
+
+.profile-menu-item:armed {
+    -fx-background-color: rgba(15, 23, 42, 0.12);
+}
+
+.profile-menu-item-content {
+    -fx-alignment: CENTER_LEFT;
+}
+
+.profile-menu-item-icon {
+    -fx-background-color: rgba(16, 24, 40, 0.05);
+    -fx-background-radius: 12;
+    -fx-padding: 6 9;
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+}
+
+.profile-menu-status-dot {
+    -fx-min-width: 10px;
+    -fx-min-height: 10px;
+    -fx-max-width: 10px;
+    -fx-max-height: 10px;
+    -fx-background-color: #f4c34f;
+    -fx-background-radius: 999;
+}
+
+.profile-menu-shortcut {
+    -fx-background-color: rgba(15, 23, 42, 0.08);
+    -fx-background-radius: 999;
+    -fx-padding: 2 10;
+    -fx-text-fill: #0f172a;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+}
+
+.profile-menu-item-content {
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Items*/
+
+.card{
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 10);
+}
+
+.card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 10);
+    -fx-cursor: hand;
 }
