@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -20,7 +21,8 @@ import javafx.util.Duration;
 import java.io.IOException;
 
 public class RegisterController {
-
+    private double xOffset = 0;
+    private double yOffset = 0;
     @FXML
     private TextField nameField;
     @FXML
@@ -33,6 +35,8 @@ public class RegisterController {
     private PasswordField passwordField;
     @FXML
     private PasswordField confirmPasswordField;
+    @FXML
+    private Pane rootPane;
 
     @FXML
     private Label nameLabel;
@@ -47,6 +51,7 @@ public class RegisterController {
     @FXML
     private Label confirmPasswordLabel;
 
+
     @FXML
     public void initialize() {
         setupFloatingLabel(nameField, nameLabel);
@@ -55,6 +60,19 @@ public class RegisterController {
         setupFloatingLabel(usernameField, usernameLabel);
         setupFloatingLabel(passwordField, passwordLabel);
         setupFloatingLabel(confirmPasswordField, confirmPasswordLabel);
+
+        if (rootPane != null) {
+            rootPane.setOnMousePressed(event -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            rootPane.setOnMouseDragged(event -> {
+                Stage stage = (Stage) rootPane.getScene().getWindow();
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+        }
     }
 
     private void setupFloatingLabel(TextField field, Label label) {

@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -32,6 +33,26 @@ public class LoginController {
         javafx.application.Platform.exit();
     }
 
+    @FXML
+    private Pane rootPane;
+
+    private double xOffset = 0;
+    private double yOffset = 0;
+
+    public void initialize() {
+        if (rootPane != null) {
+            rootPane.setOnMousePressed(event -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            rootPane.setOnMouseDragged(event -> {
+                Stage stage = (Stage) rootPane.getScene().getWindow();
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+        }
+    }
     @FXML
     void handleMinimize(ActionEvent event) {
         Node source = (Node) event.getSource();
