@@ -6,26 +6,25 @@ import javafx.animation.ScaleTransition;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class homepageController {
@@ -34,6 +33,14 @@ public class homepageController {
 
     @FXML
     private StackPane avatarContainer;
+
+    @FXML
+    private BorderPane mainBorderPane;
+
+    @FXML
+    private StackPane rootStackPane;
+    @FXML
+    private StackPane modalOverlay;
 
     private Popup profilePopup;
     private VBox menuContent;
@@ -58,6 +65,48 @@ public class homepageController {
 
         configureProfileMenu();
 
+    }
+    @FXML
+    void handleNuovoAnnuncio(ActionEvent event) {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/uninaswapoobd2425/nuovoAnnuncio.fxml"));
+            Parent popupContent = loader.load();
+
+
+            modalOverlay.getChildren().clear();
+            modalOverlay.getChildren().add(popupContent);
+
+            StackPane.setAlignment(popupContent, Pos.CENTER);
+
+            if (popupContent instanceof Region) {
+                ((Region) popupContent).setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+            }
+//            modalOverlay.setCursor(javafx.scene.Cursor.HAND);
+//            popupContent.setCursor(javafx.scene.Cursor.DEFAULT);
+            modalOverlay.setOnMouseClicked(mouseEvent -> {
+                if(mouseEvent.getTarget() == modalOverlay){
+                    modalOverlay.setVisible(false);
+                    modalOverlay.getChildren().clear();
+                }
+
+            });
+
+
+            modalOverlay.setVisible(true);
+
+            // EXTRA: Se vuoi passare il riferimento a questo controller per chiudere il popup dopo:
+            // NuovoAnnuncioController popupController = loader.getController();
+            // popupController.setMainController(this);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void chiudiPopup() {
+        modalOverlay.setVisible(false);
+        modalOverlay.getChildren().clear();
     }
 
     @FXML

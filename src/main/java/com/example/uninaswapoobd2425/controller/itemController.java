@@ -1,11 +1,13 @@
 package com.example.uninaswapoobd2425.controller;
 
-import com.example.uninaswapoobd2425.model.Annuncio;
+import com.example.uninaswapoobd2425.model.annuncio;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.Objects;
 
 public class itemController {
@@ -16,19 +18,23 @@ public class itemController {
     @FXML
     private ImageView imgAnnuncio;
 
-    public void setData(Annuncio annuncio) {
-        lblTitolo.setText(annuncio.getTitolo());
-        lblPrezzo.setText(annuncio.getPrezzo());
+    @FXML
+    private void caricaImmagine() {
+        String percorso = ImageHandler.scegliImmagine(new Stage(), "src/main/resources/com/example/uninaswapoobd2425/imgs/imgAnnunci");
+        if (percorso != null) {
+            annuncio nuovoAnnuncio = new annuncio();
+            nuovoAnnuncio.setImmagineUrl(percorso);
+            System.out.println("Immagine salvata in: " + nuovoAnnuncio.getImmagineUrl());
+        }
+    }
 
-        // CARICAMENTO IMMAGINE SICURO
-        // Assicurati di avere le immagini nella cartella src/main/resources/img/
-        try {
-            String path = "/img/" + annuncio.getImmaginePath();
-            Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path)));
-            imgAnnuncio.setImage(image);
-        } catch (Exception e) {
-            // Se l'immagine non si trova, non crashare ma lascia vuoto o metti un placeholder
-            System.out.println("Immagine non trovata: " + annuncio.getImmaginePath());
+    @FXML
+    private ImageView imageViewAnnuncio;
+
+    private void mostraImmagine(annuncio a) {
+        if (a.getImmagineUrl() != null) {
+            File file = new File(a.getImmagineUrl());
+            imageViewAnnuncio.setImage(new javafx.scene.image.Image(file.toURI().toString()));
         }
     }
 }
