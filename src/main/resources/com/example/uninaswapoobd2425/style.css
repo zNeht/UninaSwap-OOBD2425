@@ -222,3 +222,143 @@
 .modalOverlay{
     -fx-background-color: rgba(0, 0, 0, 0.5);
 }
+/* Annuncio*/
+
+.annuncio-center-background{
+    -fx-background-radius: 30;
+    -fx-background-color: #EFE2D3;
+}
+.annuncio-label{
+    -fx-text-fill: #5A5A5A;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+
+/* ====== COMBOBOX stile "latte" come screenshot ====== */
+.unina-combo {
+    -fx-background-color: #F4EFE6;
+    -fx-background-insets: 0;
+    -fx-background-radius: 12;
+
+    -fx-border-color: rgba(0,0,0,0.15);
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+
+    -fx-min-height: 36px;
+    -fx-pref-height: 36px;
+    -fx-max-height: 36px;
+}
+
+/* stato hover/focused: NON deve diventare grigio */
+.unina-combo:hover,
+.unina-combo:focused,
+.unina-combo:showing {
+    -fx-background-color: #F6F1E9;
+    -fx-background-insets: 0;
+    -fx-background-radius: 12;
+
+    -fx-border-color: rgba(0,0,0,0.18);
+    -fx-border-radius: 12;
+}
+
+/* testo+icona dentro la combo chiusa */
+.unina-combo .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 6 10 6 12;
+    -fx-text-fill: #5A5A5A;
+    -fx-font-weight: bold;
+}
+
+/* freccia */
+.unina-combo .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 10 0 6;
+}
+.unina-combo .arrow {
+    -fx-background-color: rgba(60,60,60,0.70);
+}
+
+/* popup */
+.unina-combo .combo-box-popup .list-view {
+    -fx-background-color: #F7F2EA;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-padding: 6;
+}
+
+/* righe popup */
+.unina-combo .combo-box-popup .list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 8 12 8 12;
+    -fx-text-fill: #5A5A5A;
+    -fx-font-weight: bold;
+}
+
+/* hover/selected in popup: beige */
+.unina-combo .combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: #E8CD9A;
+    -fx-background-radius: 10;
+    -fx-text-fill: #5A5A5A;
+    -fx-font-weight: bold;
+}
+.unina-combo .combo-box-popup .list-view .list-cell:selected {
+    -fx-background-color: #E2C58E;
+    -fx-background-radius: 10;
+    -fx-text-fill: #5A5A5A;
+    -fx-font-weight: bold;
+}
+
+/* niente focus blu */
+.unina-combo:focused {
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+.combo-text {
+    -fx-text-fill: #5A5A5A;
+    -fx-font-weight: bold;
+}
+
+.euro-label {
+    -fx-text-fill: #5A5A5A;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+/*bottoni vsr*/
+
+.segment-btn {
+    -fx-background-color: #EFE9DF;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-width: 1;
+
+    -fx-padding: 6 10 6 10;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: rgba(60,60,60,0.75);
+
+    -fx-graphic-text-gap: 6;
+}
+
+
+/* hover leggero */
+.segment-btn:hover {
+    -fx-background-color: #F3EDE4;
+}
+
+/* SELEZIONATO (come "In vendita" nello screenshot) */
+.segment-btn:selected {
+    -fx-background-color: #E8CD9A;          /* beige/oro */
+    -fx-border-color: rgba(0,0,0,0.12);
+    -fx-text-fill: rgba(60,60,60,0.90);
+}
+
+/* evita focus blu */
+.segment-btn:focused {
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}

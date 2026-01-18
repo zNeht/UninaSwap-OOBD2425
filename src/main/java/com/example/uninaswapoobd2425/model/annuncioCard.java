@@ -27,7 +27,7 @@ public class annuncioCard extends VBox {
         titolo.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
 
         // Prezzo o tipo
-        Label prezzo = new Label(annuncio.getTipoAnnuncio() == tipoAnnuncio.VENDITA ?
+        Label prezzo = new Label(annuncio.getTipoAnnuncio() == tipoAnnuncio.vendita ?
                 "€ " + annuncio.getPrezzo() : annuncio.getTipoAnnuncio().toString());
 
         // Bottone dettagli
