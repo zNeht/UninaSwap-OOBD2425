@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.uninaswapoobd2425.controller.dettaglioAnnuncioController"
+           fx:id="dialogRoot"
+           prefWidth="520" prefHeight="640"
+           maxWidth="520" maxHeight="640"
+           styleClass="detail-popup">
+
+    <!-- CARD -->
+    <ScrollPane fx:id="detailScroll"
+                fitToWidth="true"
+                hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                prefViewportWidth="520"
+                prefViewportHeight="640"
+                styleClass="detail-scroll"
+                StackPane.alignment="CENTER">
+
+        <content>
+            <VBox spacing="14" styleClass="detail-card">
+                <padding>
+                    <Insets top="14" right="14" bottom="16" left="14"/>
+                </padding>
+
+                <StackPane styleClass="detail-hero">
+                    <ImageView fx:id="imgMain" fitHeight="240" preserveRatio="false"/>
+                    <Label fx:id="lblTipoBadge" styleClass="badge-tipo" StackPane.alignment="TOP_LEFT"/>
+                    <Button text="✕" onAction="#handleClose" styleClass="detail-close" StackPane.alignment="TOP_RIGHT"/>
+                </StackPane>
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label fx:id="lblTitolo" styleClass="detail-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblPrezzo" styleClass="price-pill"/>
+                </HBox>
+
+                <FlowPane hgap="10" vgap="10" alignment="CENTER_LEFT">
+                    <Label fx:id="lblCategoria" styleClass="chip"/>
+
+                    <HBox fx:id="chipVenditore" alignment="CENTER_LEFT" spacing="6" styleClass="chip chip-compact">
+                        <Label text="Inserito da:" styleClass="chip-muted"/>
+                        <Label fx:id="lblVenditoreEmail" styleClass="chip-bold"/>
+                    </HBox>
+                </FlowPane>
+
+                <VBox spacing="6" styleClass="section-box">
+                    <Label text="Descrizione" styleClass="section-title"/>
+                    <Label fx:id="lblDescrizione" wrapText="true" styleClass="section-text"/>
+                </VBox>
+
+                <VBox spacing="10" styleClass="section-box">
+                    <Label text="Fai un’offerta" styleClass="section-title"/>
+                    <VBox fx:id="offerContainer" spacing="10"/>
+                </VBox>
+
+            </VBox>
+        </content>
+    </ScrollPane>
+</StackPane>

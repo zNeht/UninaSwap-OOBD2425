@@ -1,5 +1,9 @@
 package com.example.uninaswapoobd2425.controller;
 
+import com.example.uninaswapoobd2425.dao.DB;
+import com.example.uninaswapoobd2425.dao.annuncioDAO;
+import com.example.uninaswapoobd2425.model.annuncio;
+import com.example.uninaswapoobd2425.model.categoriaAnnuncio;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
@@ -11,20 +15,22 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
+import javafx.scene.layout.Region;
+import javafx.geometry.Pos;
 import java.io.IOException;
+import java.sql.Connection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class homepageController {
@@ -33,7 +39,8 @@ public class homepageController {
 
     @FXML
     private StackPane avatarContainer;
-
+    @FXML
+    private TilePane tileAnnunci;
     @FXML
     private BorderPane mainBorderPane;
 
@@ -42,11 +49,21 @@ public class homepageController {
     @FXML
     private StackPane modalOverlay;
 
+    @FXML private HBox filterBar;
+
+    @FXML private ToggleButton btnTutti, btnLibri, btnInformatica, btnAbbigliamento, btnStrumenti, btnAltro;
+    @FXML private Button btnExpand;
+
+    private final ToggleGroup catGroup = new ToggleGroup();
+    private boolean expanded = true;
+    private final Map<ToggleButton, categoriaAnnuncio> map = new HashMap<>();
+
     private Popup profilePopup;
     private VBox menuContent;
 
     @FXML
     public void initialize() {
+
         Image img = new Image(
                 Objects.requireNonNull(
                         getClass().getResource("/com/example/uninaswapoobd2425/imgs/prov.png")
@@ -63,6 +80,48 @@ public class homepageController {
         );
         avatarImage.setClip(clip);
 
+        btnTutti.setToggleGroup(catGroup);
+        btnLibri.setToggleGroup(catGroup);
+        btnInformatica.setToggleGroup(catGroup);
+        btnAbbigliamento.setToggleGroup(catGroup);
+        btnStrumenti.setToggleGroup(catGroup);
+        btnAltro.setToggleGroup(catGroup);
+
+        btnTutti.setSelected(true);
+
+        map.put(btnLibri, categoriaAnnuncio.libri);
+        map.put(btnInformatica, categoriaAnnuncio.informatica);
+        map.put(btnAbbigliamento, categoriaAnnuncio.abbigliamento);
+        map.put(btnStrumenti, categoriaAnnuncio.strumenti_musicali);
+        map.put(btnAltro, categoriaAnnuncio.altro);
+
+        btnExpand.setOnAction(e -> toggleFilters());
+        catGroup.selectedToggleProperty().addListener((obs, oldT, newT) -> {
+            // Se l'utente prova a togliere la selezione (newT == null), ripristina il vecchio
+            if (newT == null) {
+                oldT.setSelected(true);
+                return;
+            }
+
+            // qui fai il filtro normalmente
+            if (newT == btnTutti) filtraPerCategoria(null);
+            else filtraPerCategoria(map.get((ToggleButton) newT));
+        });
+        catGroup.selectedToggleProperty().addListener((obs, oldT, newT) -> {
+            if (newT == null) return;
+
+            if (newT == btnTutti) {
+                filtraPerCategoria(null); // null = tutte
+            } else {
+                categoriaAnnuncio cat = map.get((ToggleButton) newT);
+                filtraPerCategoria(cat);
+            }
+        });
+
+        btnTutti.setSelected(true);
+        catGroup.selectToggle(btnTutti);
+
+        caricaAnnunci();
         configureProfileMenu();
 
     }
@@ -95,7 +154,7 @@ public class homepageController {
 
             modalOverlay.setVisible(true);
 
-            // EXTRA: Se vuoi passare il riferimento a questo controller per chiudere il popup dopo:
+            // passare il riferimento a questo controller per chiudere il popup dopo:
             // NuovoAnnuncioController popupController = loader.getController();
             // popupController.setMainController(this);
 
@@ -107,6 +166,122 @@ public class homepageController {
     public void chiudiPopup() {
         modalOverlay.setVisible(false);
         modalOverlay.getChildren().clear();
+    }
+
+    private void toggleFilters() {
+        expanded = !expanded;
+
+        setVisibleManaged(btnLibri, expanded);
+        setVisibleManaged(btnInformatica, expanded);
+        setVisibleManaged(btnAbbigliamento, expanded);
+        setVisibleManaged(btnStrumenti, expanded);
+        setVisibleManaged(btnAltro, expanded);
+
+        btnExpand.setText(expanded ? "‹" : "›");
+    }
+
+    private void setVisibleManaged(Control c, boolean v) {
+        c.setVisible(v);
+        c.setManaged(v);
+    }
+
+    private void filtraPerCategoria(categoriaAnnuncio cat) {
+        // QUI decidi cosa fare:
+        // - o richiami DAO per riprendere lista filtrata
+        // - o filtri in memoria una lista già caricata
+        //
+        // Esempio: ricarico da DB
+        // caricaAnnunci(cat);
+    }
+
+    public void loadAnnunci(List<annuncio> annunci) {
+        tileAnnunci.getChildren().clear();
+
+        for (annuncio a : annunci) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                        "/com/example/uninaswapoobd2425/annuncioCard.fxml"
+                ));
+                Parent card = loader.load();
+                annuncioCardController c = loader.getController();
+                c.setData(a);
+
+                tileAnnunci.getChildren().add(card);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private void caricaAnnunci() {
+        tileAnnunci.getChildren().clear();
+
+        try (Connection conn = DB.getConnection()) {
+            annuncioDAO dao = new annuncioDAO(conn);
+            List<annuncio> lista = dao.getAnnunciAttiviConImgPrincipale();
+
+            for (annuncio a : lista) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                        "/com/example/uninaswapoobd2425/annuncioCard.fxml"
+                ));
+                Parent card = loader.load();
+                card.setPickOnBounds(true);
+                card.setCursor(javafx.scene.Cursor.HAND);
+                card.setOnMouseClicked(e -> openDettaglio(a));
+                card.setPickOnBounds(true);
+
+                annuncioCardController c = loader.getController();
+                c.setData(a);
+
+                tileAnnunci.getChildren().add(card);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openDettaglio(annuncio a) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/uninaswapoobd2425/dettaglioAnnuncio.fxml"
+            ));
+            Parent view = loader.load();
+
+            if (view instanceof Region r) {
+                r.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+            }
+
+            modalOverlay.getChildren().setAll(view);
+            StackPane.setAlignment(view, Pos.CENTER);
+
+            modalOverlay.setVisible(true);
+            dettaglioAnnuncioController c = loader.getController();
+            c.setAnnuncio(a);
+            c.setOnClose(this::closeModal);
+
+            modalOverlay.getChildren().setAll(view);
+            modalOverlay.setVisible(true);
+            modalOverlay.setManaged(true);
+            modalOverlay.setMouseTransparent(false);
+
+            // click sullo sfondo per chiudere
+            modalOverlay.setOnMouseClicked(ev -> {
+                if (ev.getTarget() == modalOverlay) closeModal();
+            });
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void closeModal() {
+        modalOverlay.getChildren().clear();
+        modalOverlay.setVisible(false);
+        modalOverlay.setManaged(false);
+        modalOverlay.setMouseTransparent(true);
     }
 
     @FXML

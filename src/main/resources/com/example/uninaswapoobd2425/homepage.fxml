@@ -18,7 +18,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.control.ToggleButton?>
 <StackPane fx:id="rootStackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" styleClass="homepage-background-main-color" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uninaswapoobd2425.controller.homepageController">
    <children>
       <BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1260.0" styleClass="homepage-background-color2" stylesheets="@style.css">
@@ -255,12 +257,47 @@
             </HBox>
          </top>
          <center>
-            <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <content>
-                  <FlowPane prefHeight="200.0" prefWidth="200.0" />
-               </content>
-            </ScrollPane>
+            <VBox spacing="12.0" styleClass="content-panel" BorderPane.alignment="CENTER">
+               <padding>
+                  <Insets top="14" right="14" bottom="14" left="14"/>
+               </padding>
+
+               <children>
+                  <!-- barra filtri -->
+                  <HBox fx:id="filterBar" spacing="6" alignment="CENTER_LEFT" styleClass="filter-bar">
+                     <children>
+                        <ToggleButton fx:id="btnTutti" text="Tutti" />
+                        <ToggleButton fx:id="btnLibri" text="Libri" />
+                        <ToggleButton fx:id="btnInformatica" text="Informatica" />
+                        <ToggleButton fx:id="btnAbbigliamento" text="Abbigliamento" />
+                        <ToggleButton fx:id="btnStrumenti" text="Strumenti musicali" />
+                        <ToggleButton fx:id="btnAltro" text="Altro" />
+                        <Button fx:id="btnExpand" text="‹" />
+                     </children>
+                  </HBox>
+
+                  <!-- scroll annunci -->
+                  <ScrollPane fx:id="scrollAnnunci"
+                              fitToWidth="true"
+                              pannable="true"
+                              styleClass="unina-scroll"
+                              VBox.vgrow="ALWAYS">
+                     <content>
+                        <TilePane fx:id="tileAnnunci"
+                                  prefColumns="4"
+                                  hgap="18" vgap="18"
+                                  tileAlignment="TOP_LEFT"
+                                  styleClass="annunci-grid">
+                           <padding>
+                              <Insets top="6" right="6" bottom="6" left="6"/>
+                           </padding>
+                        </TilePane>
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
          </center>
+
       </BorderPane>
       <StackPane fx:id="modalOverlay" prefHeight="150.0" prefWidth="200.0" styleClass="modalOverlay" visible="false" />
    </children>

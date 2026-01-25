@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.uninaswapoobd2425.controller.offerScambioController"
+      spacing="10">
+
+    <Label text="Offri uno o più oggetti in scambio" styleClass="muted"/>
+
+    <ListView fx:id="listOggetti" prefHeight="140"/>
+
+    <HBox spacing="10">
+        <Button text="+ Aggiungi oggetto" onAction="#handleAdd" styleClass="btn-secondary"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Invia proposta di scambio" onAction="#handleInvia" styleClass="btn-primary"/>
+    </HBox>
+
+    <TextField fx:id="txtDettagli" promptText="Dettagli / condizioni dello scambio (opzionale)"/>
+</VBox>

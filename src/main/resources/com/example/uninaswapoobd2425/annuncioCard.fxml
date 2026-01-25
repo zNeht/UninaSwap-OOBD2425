@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.uninaswapoobd2425.controller.annuncioCardController"
+      styleClass="card"
+      spacing="8" prefWidth="200">
+
+    <StackPane>
+        <ImageView fx:id="img" fitWidth="200" fitHeight="160" preserveRatio="false"/>
+        <Label fx:id="badgeTipo" styleClass="badge" StackPane.alignment="TOP_LEFT"/>
+    </StackPane>
+
+    <Label fx:id="titolo" styleClass="card-title"/>
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <Label fx:id="prezzo" styleClass="price"/>
+
+        <Label fx:id="categoria" styleClass="chip"/>
+
+    </HBox>
+
+    <Label fx:id="luogo" styleClass="muted"/>
+</VBox>

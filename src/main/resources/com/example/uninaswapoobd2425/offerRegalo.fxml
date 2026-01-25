@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.uninaswapoobd2425.controller.offerRegaloController"
+      spacing="10">
+
+    <Label text="Messaggio" styleClass="muted"/>
+
+    <TextArea fx:id="txtMsg" promptText="Ciao! Mi servirebbe per..." wrapText="true" prefRowCount="4"/>
+    <Label fx:id="lblCount" text="0/300" styleClass="muted"/>
+
+    <Button text="Invia richiesta" onAction="#handleInvia" styleClass="btn-primary"/>
+</VBox>

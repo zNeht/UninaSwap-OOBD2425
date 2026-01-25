@@ -18,7 +18,7 @@ public class annuncioCard extends VBox {
         setStyle("-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-background-radius: 5;");
 
         // Immagine
-        ImageView img = new ImageView(new Image(annuncio.getImmagineUrl()));
+        ImageView img = new ImageView(new Image(annuncio.getImmaginePath()));
         img.setFitWidth(100);
         img.setFitHeight(100);
 
@@ -27,8 +27,8 @@ public class annuncioCard extends VBox {
         titolo.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
 
         // Prezzo o tipo
-        Label prezzo = new Label(annuncio.getTipoAnnuncio() == tipoAnnuncio.vendita ?
-                "€ " + annuncio.getPrezzo() : annuncio.getTipoAnnuncio().toString());
+        Label prezzo = new Label(annuncio.getTipo() == tipoAnnuncio.vendita ?
+                "€ " + annuncio.getPrezzo() : annuncio.getTipo().toString());
 
         // Bottone dettagli
         Button btn = new Button("Visualizza");

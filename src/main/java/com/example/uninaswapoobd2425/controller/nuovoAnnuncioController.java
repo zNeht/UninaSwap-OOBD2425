@@ -25,8 +25,6 @@ import java.sql.Connection;
 import java.io.File;
 import java.util.*;
 
-import static java.sql.DriverManager.getConnection;
-
 public class nuovoAnnuncioController {
     private static final int MAX_IMG = 5;
     private static final double THUMB_SIZE = 90;
@@ -273,24 +271,22 @@ public class nuovoAnnuncioController {
         if (cat == null) { showWarn("Errore", "Seleziona la categoria."); return; }
 
         String categoria = cat.name();
-        String stato = "ATTIVO";
+        String stato = "attivo";
 
         // TODO: prendi dal tuo UI (vendita/scambio/regalo)
-        String tipo = "VENDITA";
+        String tipoSelezionato = this.tipo;
 
         // TODO: prendi dal login/sessione
         String matricolaVenditore = getMatricolaUtenteLoggato();
 
 
         BigDecimal prezzo = parsePrezzoBigDecimalOrNull(prezzoField.getText());
-        if (!"VENDITA".equalsIgnoreCase(tipo)) prezzo = null;
+        if (!"vendita".equalsIgnoreCase(tipo)) prezzo = null;
 
-        if ("VENDITA".equalsIgnoreCase(tipo) && prezzo == null) {
+        if ("vendita".equalsIgnoreCase(tipo) && prezzo == null) {
             showWarn("Errore", "Inserisci un prezzo per la vendita.");
             return;
         }
-        // Se tipo regalo, prezzo null
-        if ("REGALO".equalsIgnoreCase(tipo)) prezzo = null;
 
         try (Connection conn = DB.getConnection()) {
             boolean oldAuto = conn.getAutoCommit();
@@ -306,7 +302,7 @@ public class nuovoAnnuncioController {
                         matricolaVenditore,
                         categoria,
                         stato,
-                        tipo
+                        tipoSelezionato
                 );
 
                 ImageHandler handler = new ImageHandler();
@@ -365,7 +361,7 @@ public class nuovoAnnuncioController {
 
     private String getMatricolaUtenteLoggato() {
         // TODO: aggancia al tuo sistema di login/sessione
-        return "N123456";
+        return "U1";
     }
 
 
