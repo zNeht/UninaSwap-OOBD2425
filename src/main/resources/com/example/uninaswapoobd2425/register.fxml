@@ -66,7 +66,7 @@
             </Button>
          </children>
       </HBox>
-      <Button layoutX="141.0" layoutY="406.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="333.0" text="Registrati">
+      <Button layoutX="141.0" layoutY="406.0" mnemonicParsing="false" onAction="#handleRegister" prefHeight="36.0" prefWidth="333.0" text="Registrati">
          <styleClass>
             <String fx:value="access-buttons" />
             <String fx:value="hovering-access-button" />
@@ -112,7 +112,7 @@
             </StackPane>
             <StackPane alignment="CENTER_LEFT" prefHeight="51.0" prefWidth="333.0">
                <children>
-                  <Label fx:id="usernameLabel" mouseTransparent="true" styleClass="register-labels" text="Username" />
+                  <Label fx:id="usernameLabel" mouseTransparent="true" styleClass="register-labels" text="Matricola" />
                   <TextField fx:id="usernameField" prefHeight="0.0" prefWidth="333.0" styleClass="register-fields" stylesheets="@style.css" />
                </children>
             </StackPane>

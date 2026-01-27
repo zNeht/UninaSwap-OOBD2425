@@ -39,7 +39,7 @@
       </ImageView>
       <VBox alignment="CENTER" layoutX="171.0" layoutY="151.0" prefHeight="160.0" prefWidth="281.0" spacing="20.0">
          <children>
-            <TextField prefWidth="296.0" promptText="Username" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-width: 0; -fx-prompt-text-fill: gray; -fx-font-size: 14px;">
+            <TextField fx:id="matricolaField" prefWidth="296.0" promptText="Matricola" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-width: 0; -fx-prompt-text-fill: gray; -fx-font-size: 14px;">
                <font>
                   <Font size="13.0" />
                </font>
@@ -47,12 +47,12 @@
                   <Insets />
                </VBox.margin>
             </TextField>
-            <PasswordField promptText="Password" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-width: 0; -fx-prompt-text-fill: gray; -fx-font-size: 14px;">
+            <PasswordField fx:id="passwordField" promptText="Password" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-width: 0; -fx-prompt-text-fill: gray; -fx-font-size: 14px;">
                <font>
                   <Font size="13.0" />
                </font>
             </PasswordField>
-            <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="281.0" text="Accedi">
+            <Button mnemonicParsing="false" onAction="#handleLogin" prefHeight="25.0" prefWidth="281.0" text="Accedi">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>

@@ -6,16 +6,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
 import java.util.Objects;
 
 public class dettaglioAnnuncioController {
-    @FXML private ScrollPane detailScroll;
+    @FXML private StackPane dialogRoot;
+    @FXML private VBox detailCard;
     @FXML private ImageView imgMain;
     @FXML private Label lblTipoBadge;
     @FXML private Label lblTitolo;
@@ -31,7 +32,8 @@ public class dettaglioAnnuncioController {
     private Runnable onClose = () -> {};
     @FXML
     private void initialize() {
-        imgMain.fitWidthProperty().bind(detailScroll.widthProperty().subtract(28));
+        imgMain.fitWidthProperty().bind(dialogRoot.widthProperty().subtract(28));
+        clipToCardBounds();
     }
 
     public void setOnClose(Runnable r) { this.onClose = r; }
@@ -111,6 +113,13 @@ public class dettaglioAnnuncioController {
         clip.widthProperty().bind(iv.fitWidthProperty());
         clip.heightProperty().bind(iv.fitHeightProperty());
         iv.setClip(clip);
+    }
+
+    private void clipToCardBounds() {
+        Rectangle clip = new Rectangle();
+        clip.widthProperty().bind(detailCard.widthProperty());
+        clip.heightProperty().bind(detailCard.heightProperty());
+        detailCard.setClip(clip);
     }
 
     private String capFirst(String s) {

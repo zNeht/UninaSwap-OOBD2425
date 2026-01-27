@@ -53,14 +53,226 @@ public class annuncioDAO {
                 an.setDescrizione(rs.getString("descrizione"));
                 an.setPrezzo(rs.getBigDecimal("prezzo"));
 
-                an.setCategoria(categoriaAnnuncio.valueOf(rs.getString("categoria").toLowerCase()));
-                an.setTipo(tipoAnnuncio.valueOf(rs.getString("tipo").toLowerCase()));
-                an.setStato(statoAnnuncio.valueOf(rs.getString("stato").toLowerCase()));
+                an.setCategoria(parseCategoria(rs.getString("categoria")));
+                an.setTipo(parseTipo(rs.getString("tipo")));
+                an.setStato(parseStato(rs.getString("stato")));
 
                 an.setVenditoreEmail(rs.getString("venditore_mail"));
                 an.setImmaginePath(rs.getString("img_path"));
 
                 out.add(an);
+            }
+        }
+
+        return out;
+    }
+
+    public List<annuncio> getAnnunciAttiviConImgPrincipaleByTipo(tipoAnnuncio tipo) throws SQLException {
+        String sql = """
+        SELECT a.id_annuncio,
+               a.titolo,
+               a.descrizione,
+               a.prezzo,
+               a.categoria,
+               a.tipo,
+               a.stato,
+               u.mail AS venditore_mail,
+               ia.path AS img_path
+        FROM annuncio a
+        JOIN utente u
+          ON u.matricola = a.matricola_venditore
+        LEFT JOIN immagine_annuncio ia
+               ON ia.id_annuncio = a.id_annuncio
+              AND ia.is_principale = true
+        WHERE a.stato = 'attivo'::stato_annuncio_enum
+          AND a.tipo = ?::tipo_annuncio_enum
+        ORDER BY a.data DESC, a.id_annuncio DESC
+    """;
+
+        List<annuncio> out = new ArrayList<>();
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, tipo.name());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    annuncio an = new annuncio();
+
+                    an.setIdAnnuncio(rs.getInt("id_annuncio"));
+                    an.setTitolo(rs.getString("titolo"));
+                    an.setDescrizione(rs.getString("descrizione"));
+                    an.setPrezzo(rs.getBigDecimal("prezzo"));
+
+                    an.setCategoria(parseCategoria(rs.getString("categoria")));
+                    an.setTipo(parseTipo(rs.getString("tipo")));
+                    an.setStato(parseStato(rs.getString("stato")));
+
+                    an.setVenditoreEmail(rs.getString("venditore_mail"));
+                    an.setImmaginePath(rs.getString("img_path"));
+
+                    out.add(an);
+                }
+            }
+        }
+
+        return out;
+    }
+
+    public List<annuncio> getAnnunciAttiviConImgPrincipaleByTipoAndCategoria(
+            tipoAnnuncio tipo,
+            categoriaAnnuncio categoria
+    ) throws SQLException {
+        String sql = """
+        SELECT a.id_annuncio,
+               a.titolo,
+               a.descrizione,
+               a.prezzo,
+               a.categoria,
+               a.tipo,
+               a.stato,
+               u.mail AS venditore_mail,
+               ia.path AS img_path
+        FROM annuncio a
+        JOIN utente u
+          ON u.matricola = a.matricola_venditore
+        LEFT JOIN immagine_annuncio ia
+               ON ia.id_annuncio = a.id_annuncio
+              AND ia.is_principale = true
+        WHERE a.stato = 'attivo'::stato_annuncio_enum
+          AND a.tipo = ?::tipo_annuncio_enum
+          AND a.categoria = ?::categoria_annuncio_enum
+        ORDER BY a.data DESC, a.id_annuncio DESC
+    """;
+
+        List<annuncio> out = new ArrayList<>();
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, tipo.name());
+            ps.setString(2, categoria.name());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    annuncio an = new annuncio();
+
+                    an.setIdAnnuncio(rs.getInt("id_annuncio"));
+                    an.setTitolo(rs.getString("titolo"));
+                    an.setDescrizione(rs.getString("descrizione"));
+                    an.setPrezzo(rs.getBigDecimal("prezzo"));
+
+                    an.setCategoria(parseCategoria(rs.getString("categoria")));
+                    an.setTipo(parseTipo(rs.getString("tipo")));
+                    an.setStato(parseStato(rs.getString("stato")));
+
+                    an.setVenditoreEmail(rs.getString("venditore_mail"));
+                    an.setImmaginePath(rs.getString("img_path"));
+
+                    out.add(an);
+                }
+            }
+        }
+
+        return out;
+    }
+
+    public List<annuncio> getAnnunciPreferitiByUtente(String matricola) throws SQLException {
+        String sql = """
+        SELECT a.id_annuncio,
+               a.titolo,
+               a.descrizione,
+               a.prezzo,
+               a.categoria,
+               a.tipo,
+               a.stato,
+               u.mail AS venditore_mail,
+               ia.path AS img_path
+        FROM wishlist w
+        JOIN annuncio a
+          ON a.id_annuncio = w.id_annuncio
+        JOIN utente u
+          ON u.matricola = a.matricola_venditore
+        LEFT JOIN immagine_annuncio ia
+               ON ia.id_annuncio = a.id_annuncio
+              AND ia.is_principale = true
+        WHERE w.id_utente = ?
+          AND a.stato = 'attivo'::stato_annuncio_enum
+        ORDER BY a.data DESC, a.id_annuncio DESC
+    """;
+
+        List<annuncio> out = new ArrayList<>();
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, matricola);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    annuncio an = new annuncio();
+
+                    an.setIdAnnuncio(rs.getInt("id_annuncio"));
+                    an.setTitolo(rs.getString("titolo"));
+                    an.setDescrizione(rs.getString("descrizione"));
+                    an.setPrezzo(rs.getBigDecimal("prezzo"));
+
+                    an.setCategoria(parseCategoria(rs.getString("categoria")));
+                    an.setTipo(parseTipo(rs.getString("tipo")));
+                    an.setStato(parseStato(rs.getString("stato")));
+
+                    an.setVenditoreEmail(rs.getString("venditore_mail"));
+                    an.setImmaginePath(rs.getString("img_path"));
+
+                    out.add(an);
+                }
+            }
+        }
+
+        return out;
+    }
+
+    public List<annuncio> getAnnunciPreferitiByUtenteAndCategoria(String matricola, categoriaAnnuncio categoria)
+            throws SQLException {
+        String sql = """
+        SELECT a.id_annuncio,
+               a.titolo,
+               a.descrizione,
+               a.prezzo,
+               a.categoria,
+               a.tipo,
+               a.stato,
+               u.mail AS venditore_mail,
+               ia.path AS img_path
+        FROM wishlist w
+        JOIN annuncio a
+          ON a.id_annuncio = w.id_annuncio
+        JOIN utente u
+          ON u.matricola = a.matricola_venditore
+        LEFT JOIN immagine_annuncio ia
+               ON ia.id_annuncio = a.id_annuncio
+              AND ia.is_principale = true
+        WHERE w.id_utente = ?
+          AND a.stato = 'attivo'::stato_annuncio_enum
+          AND a.categoria = ?::categoria_annuncio_enum
+        ORDER BY a.data DESC, a.id_annuncio DESC
+    """;
+
+        List<annuncio> out = new ArrayList<>();
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, matricola);
+            ps.setString(2, categoria.name());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    annuncio an = new annuncio();
+
+                    an.setIdAnnuncio(rs.getInt("id_annuncio"));
+                    an.setTitolo(rs.getString("titolo"));
+                    an.setDescrizione(rs.getString("descrizione"));
+                    an.setPrezzo(rs.getBigDecimal("prezzo"));
+
+                    an.setCategoria(parseCategoria(rs.getString("categoria")));
+                    an.setTipo(parseTipo(rs.getString("tipo")));
+                    an.setStato(parseStato(rs.getString("stato")));
+
+                    an.setVenditoreEmail(rs.getString("venditore_mail"));
+                    an.setImmaginePath(rs.getString("img_path"));
+
+                    out.add(an);
+                }
             }
         }
 
@@ -103,5 +315,20 @@ public class annuncioDAO {
         }
 
         throw new SQLException("Impossibile ottenere id_annuncio (RETURNING vuoto)");
+    }
+
+    private categoriaAnnuncio parseCategoria(String val) {
+        if (val == null || val.isBlank()) return null;
+        return categoriaAnnuncio.valueOf(val.toLowerCase());
+    }
+
+    private tipoAnnuncio parseTipo(String val) {
+        if (val == null || val.isBlank()) return null;
+        return tipoAnnuncio.valueOf(val.toLowerCase());
+    }
+
+    private statoAnnuncio parseStato(String val) {
+        if (val == null || val.isBlank()) return null;
+        return statoAnnuncio.valueOf(val.toLowerCase());
     }
 }

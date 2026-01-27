@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.uninaswapoobd2425.controller.recensioneCardController"
+      spacing="12" styleClass="card" prefWidth="280" maxWidth="280" minWidth="280" fillWidth="true">
+    <padding>
+        <Insets top="14" right="16" bottom="14" left="16"/>
+    </padding>
+
+    <VBox spacing="4">
+        <Label fx:id="lblTitolo" styleClass="offer-title" wrapText="true"/>
+        <HBox spacing="6" alignment="CENTER_LEFT">
+            <Label fx:id="lblUtenteTitle" text="Utente" styleClass="offer-muted"/>
+            <Label fx:id="lblUtente" styleClass="offer-note"/>
+        </HBox>
+        <HBox spacing="6" alignment="CENTER_LEFT">
+            <Label text="Data" styleClass="offer-muted"/>
+            <Label fx:id="lblData" styleClass="offer-note"/>
+        </HBox>
+    </VBox>
+
+    <HBox fx:id="starsBox" alignment="CENTER" spacing="4">
+        <Label fx:id="star1" text="★" styleClass="review-star"/>
+        <Label fx:id="star2" text="★" styleClass="review-star"/>
+        <Label fx:id="star3" text="★" styleClass="review-star"/>
+        <Label fx:id="star4" text="★" styleClass="review-star"/>
+        <Label fx:id="star5" text="★" styleClass="review-star"/>
+    </HBox>
+
+    <VBox spacing="4">
+        <Label text="Commento" styleClass="offer-muted"/>
+        <Label fx:id="lblCommento" wrapText="true" styleClass="offer-note"/>
+    </VBox>
+</VBox>

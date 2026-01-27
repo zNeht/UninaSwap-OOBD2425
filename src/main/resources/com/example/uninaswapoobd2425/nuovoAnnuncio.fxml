@@ -31,7 +31,7 @@
          <children>
             <VBox layoutX="25.0" layoutY="20.0" prefHeight="509.0" prefWidth="411.0">
                <children>
-                  <Label styleClass="annuncio-label" text="Titolo dell'annuncio" />
+                  <Label styleClass="annuncio-label" text="Titolo dell'annuncio (Max 25 caratteri)" />
                   <TextField fx:id="titoloField" />
                   <Label styleClass="annuncio-label" text="Categoria" />
                   <ComboBox fx:id="categoriaCombo" prefHeight="36.0" prefWidth="411.0" styleClass="unina-combo" />

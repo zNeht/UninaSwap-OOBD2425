@@ -89,6 +89,11 @@ public class nuovoAnnuncioController {
 
         categoriaCombo.setCellFactory(cb -> new CategoriaCell());
         categoriaCombo.setButtonCell(new CategoriaCell());
+
+        titoloField.setTextFormatter(new TextFormatter<>(change -> {
+            String text = change.getControlNewText();
+            return text.length() <= 25 ? change : null;
+        }));
     }
 
     private class CategoriaCell extends ListCell<categoriaAnnuncio> {
@@ -253,7 +258,15 @@ public class nuovoAnnuncioController {
     @FXML
     void handleAnnulla(ActionEvent event) {
         // Trucco per nascondere il genitore (l'overlay) senza complicati passaggi di dati
-        annullaButton.getScene().lookup("#modalOverlay").setVisible(false);
+        var overlay = annullaButton.getScene().lookup("#modalOverlay");
+        if (overlay != null) {
+            overlay.setVisible(false);
+            overlay.setManaged(false);
+            overlay.setMouseTransparent(true);
+            if (overlay instanceof StackPane sp) {
+                sp.getChildren().clear();
+            }
+        }
 
         // OPPURE, se vuoi farlo più pulito risalendo la gerarchia:
         // ((StackPane) annullaButton.getParent().getParent()).setVisible(false);
@@ -315,7 +328,15 @@ public class nuovoAnnuncioController {
                 conn.setAutoCommit(oldAuto);
 
                 new Alert(Alert.AlertType.INFORMATION, "Annuncio pubblicato! ID: " + idAnnuncio).showAndWait();
-                annullaButton.getScene().lookup("#modalOverlay").setVisible(false);
+                var overlay = annullaButton.getScene().lookup("#modalOverlay");
+                if (overlay != null) {
+                    overlay.setVisible(false);
+                    overlay.setManaged(false);
+                    overlay.setMouseTransparent(true);
+                    if (overlay instanceof StackPane sp) {
+                        sp.getChildren().clear();
+                    }
+                }
 
             } catch (Exception e) {
                 conn.rollback();
@@ -360,8 +381,7 @@ public class nuovoAnnuncioController {
     private String safe(String s) { return s == null ? "" : s.trim(); }
 
     private String getMatricolaUtenteLoggato() {
-        // TODO: aggancia al tuo sistema di login/sessione
-        return "U1";
+        return com.example.uninaswapoobd2425.model.Session.getMatricola();
     }
 
 

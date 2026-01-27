@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.uninaswapoobd2425.controller.recensioniController"
+      spacing="14" styleClass="offers-page">
+    <padding>
+        <Insets top="6" right="6" bottom="6" left="6"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text="Recensioni" styleClass="section-title" style="-fx-font-size: 30px;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <VBox alignment="CENTER_RIGHT" spacing="4">
+            <HBox fx:id="boxStars" alignment="CENTER_RIGHT" spacing="6">
+                <Label fx:id="lblMedia" styleClass="offer-title"/>
+                <HBox alignment="CENTER_RIGHT" spacing="3">
+                    <Label fx:id="starA" text="☆" styleClass="review-star"/>
+                    <Label fx:id="starB" text="☆" styleClass="review-star"/>
+                    <Label fx:id="starC" text="☆" styleClass="review-star"/>
+                    <Label fx:id="starD" text="☆" styleClass="review-star"/>
+                    <Label fx:id="starE" text="☆" styleClass="review-star"/>
+                </HBox>
+            </HBox>
+            <Label fx:id="lblTotale" styleClass="offer-note"/>
+        </VBox>
+    </HBox>
+
+    <HBox alignment="CENTER_LEFT" spacing="8">
+        <Label text="Recensioni ricevute" styleClass="section-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnToggleRicevute" text="▾" onAction="#toggleRicevute" styleClass="btn-ghost"/>
+    </HBox>
+    <TilePane fx:id="tileRicevute" prefColumns="3" prefTileWidth="280" hgap="14" vgap="14" tileAlignment="TOP_LEFT"/>
+
+    <HBox alignment="CENTER_LEFT" spacing="8">
+        <Label text="Recensioni inviate" styleClass="section-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnToggleInviate" text="▾" onAction="#toggleInviate" styleClass="btn-ghost"/>
+    </HBox>
+    <TilePane fx:id="tileInviate" prefColumns="3" prefTileWidth="280" hgap="14" vgap="14" tileAlignment="TOP_LEFT"/>
+</VBox>

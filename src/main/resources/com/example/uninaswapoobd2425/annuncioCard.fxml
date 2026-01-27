@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.image.ImageView?>
+<?import javafx.geometry.Insets?>
 <VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.uninaswapoobd2425.controller.annuncioCardController"
       styleClass="card"
@@ -17,11 +18,17 @@
         <Label fx:id="badgeTipo" styleClass="badge" StackPane.alignment="TOP_LEFT"/>
     </StackPane>
 
-    <Label fx:id="titolo" styleClass="card-title"/>
+    <HBox spacing="6" alignment="CENTER_LEFT">
+        <Label fx:id="titolo" styleClass="card-title" HBox.hgrow="ALWAYS" maxWidth="1.0E9"/>
+        <HBox fx:id="wishlistPill" onMouseClicked="#handleWishlistPill" alignment="CENTER" spacing="4" styleClass="wishlist-pill">
+            <ToggleButton fx:id="btnWishlist" onAction="#handleWishlist" text="♡" styleClass="wishlist-btn"/>
+            <Label fx:id="lblWishlistCount" text="0" styleClass="wishlist-count"/>
+        </HBox>
+    </HBox>
     <HBox spacing="8" alignment="CENTER_LEFT">
-        <Label fx:id="prezzo" styleClass="price"/>
+        <Label fx:id="prezzo" styleClass="price" minWidth="0" textOverrun="CLIP"/>
 
-        <Label fx:id="categoria" styleClass="chip"/>
+        <Label fx:id="categoria" styleClass="chip" minWidth="0" textOverrun="CLIP"/>
 
     </HBox>
 

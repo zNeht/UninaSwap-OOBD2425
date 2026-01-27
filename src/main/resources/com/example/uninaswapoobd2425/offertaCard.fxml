@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.uninaswapoobd2425.controller.offertaCardController"
+      spacing="8" styleClass="card" prefWidth="280" maxWidth="280" minWidth="280" fillWidth="true">
+    <padding>
+        <Insets top="10" right="12" bottom="10" left="12"/>
+    </padding>
+
+    <Label fx:id="lblStato" styleClass="offer-status"/>
+
+    <StackPane maxWidth="256" maxHeight="142" prefWidth="256" prefHeight="142">
+        <ImageView fx:id="imgAnnuncio" fitHeight="142" fitWidth="256" preserveRatio="false" styleClass="offer-image"/>
+    </StackPane>
+
+    <Label fx:id="lblTitolo" styleClass="offer-title"/>
+
+    <HBox spacing="6" alignment="CENTER_LEFT">
+        <Label text="Offerta:" styleClass="offer-muted"/>
+        <Label fx:id="lblImporto" styleClass="offer-price"/>
+    </HBox>
+
+    <HBox spacing="6" alignment="CENTER_LEFT">
+        <Label text="Prezzo richiesto:" styleClass="offer-muted"/>
+        <Label fx:id="lblPrezzoRichiesto" styleClass="offer-requested"/>
+    </HBox>
+
+    <HBox spacing="6" alignment="CENTER_LEFT">
+        <Label text="Venditore:" styleClass="offer-muted"/>
+        <Label fx:id="lblVenditore" styleClass="offer-note"/>
+    </HBox>
+
+    <HBox spacing="6" alignment="CENTER_LEFT">
+        <Label text="Inviata il:" styleClass="offer-muted"/>
+        <Label fx:id="lblData" styleClass="offer-note"/>
+    </HBox>
+
+    <VBox spacing="8">
+        <Button fx:id="btnOggetti" text="Oggetti offerti" onAction="#handleViewItems" styleClass="btn-ghost"/>
+        <HBox fx:id="actionBar" spacing="8" alignment="CENTER_LEFT">
+            <Button fx:id="btnModifica" text="Modifica offerta" onAction="#handleModifica" styleClass="btn-primary"/>
+            <Button fx:id="btnRitira" text="Annulla offerta" onAction="#handleRitira" styleClass="btn-ghost"/>
+            <Button fx:id="btnRecensisci" text="Recensisci" onAction="#handleRecensisci" styleClass="btn-primary"/>
+        </HBox>
+    </VBox>
+</VBox>

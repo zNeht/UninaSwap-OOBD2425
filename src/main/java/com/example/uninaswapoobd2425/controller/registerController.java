@@ -1,5 +1,6 @@
 package com.example.uninaswapoobd2425.controller;
 
+import com.example.uninaswapoobd2425.dao.DB;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
@@ -10,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -19,6 +21,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 public class registerController {
     private double xOffset = 0;
@@ -182,6 +186,65 @@ public class registerController {
 
 
         fadeOut.play();
+    }
+
+    @FXML
+    void handleRegister(ActionEvent event) {
+        String nome = safeText(nameField);
+        String cognome = safeText(surnameField);
+        String mail = safeText(emailField);
+        String matricola = safeText(usernameField);
+        String password = safeText(passwordField);
+        String confirm = safeText(confirmPasswordField);
+
+        if (nome.isEmpty() || cognome.isEmpty() || mail.isEmpty() || matricola.isEmpty() || password.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "Compila tutti i campi obbligatori.").showAndWait();
+            return;
+        }
+        if (!password.equals(confirm)) {
+            new Alert(Alert.AlertType.WARNING, "Le password non coincidono.").showAndWait();
+            return;
+        }
+
+        try (Connection conn = DB.getConnection()) {
+            if (existsByColumn(conn, "matricola", matricola)) {
+                new Alert(Alert.AlertType.WARNING, "Matricola gia registrata.").showAndWait();
+                return;
+            }
+            if (existsByColumn(conn, "mail", mail)) {
+                new Alert(Alert.AlertType.WARNING, "Email gia registrata.").showAndWait();
+                return;
+            }
+
+            String sql = "INSERT INTO utente (matricola, nome, cognome, mail, password) VALUES (?, ?, ?, ?, ?)";
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, matricola);
+                ps.setString(2, nome);
+                ps.setString(3, cognome);
+                ps.setString(4, mail);
+                ps.setString(5, password);
+                ps.executeUpdate();
+            }
+        } catch (Exception ex) {
+            new Alert(Alert.AlertType.ERROR, "Errore durante la registrazione.").showAndWait();
+            ex.printStackTrace();
+            return;
+        }
+
+        new Alert(Alert.AlertType.INFORMATION, "Registrazione completata. Effettua il login.").showAndWait();
+        onLoginLinkClick(event);
+    }
+
+    private String safeText(TextField field) {
+        return field.getText() == null ? "" : field.getText().trim();
+    }
+
+    private boolean existsByColumn(Connection conn, String column, String value) throws Exception {
+        String sql = "SELECT 1 FROM utente WHERE " + column + " = ? LIMIT 1";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, value);
+            return ps.executeQuery().next();
+        }
     }
 
 }

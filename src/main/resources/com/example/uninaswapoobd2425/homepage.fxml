@@ -8,19 +8,18 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.TilePane?>
-<?import javafx.scene.control.ToggleButton?>
+
 <StackPane fx:id="rootStackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" styleClass="homepage-background-main-color" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uninaswapoobd2425.controller.homepageController">
    <children>
       <BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1260.0" styleClass="homepage-background-color2" stylesheets="@style.css">
@@ -43,7 +42,7 @@
                         <Font name="Segoe UI Bold" size="23.0" />
                      </font>
                   </Text>
-                  <HBox alignment="CENTER_LEFT" maxWidth="-Infinity" prefHeight="50.0" prefWidth="165.0" spacing="3.0" styleClass="menu-btn">
+                  <HBox fx:id="menuVendita" alignment="CENTER_LEFT" maxWidth="-Infinity" onMouseClicked="#handleFilterVendita" prefHeight="50.0" prefWidth="165.0" spacing="3.0" styleClass="menu-btn">
                      <children>
                         <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -59,7 +58,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </HBox>
-                  <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="165.0" spacing="3.0" styleClass="menu-btn">
+                  <HBox fx:id="menuScambio" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#handleFilterScambio" prefHeight="50.0" prefWidth="165.0" spacing="3.0" styleClass="menu-btn">
                      <children>
                         <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -76,7 +75,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </HBox>
-                  <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="165.0" spacing="3.0" styleClass="menu-btn">
+                  <HBox fx:id="menuRegalo" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#handleFilterRegalo" prefHeight="50.0" prefWidth="165.0" spacing="3.0" styleClass="menu-btn">
                      <children>
                         <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -93,7 +92,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </HBox>
-                  <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="165.0" spacing="3.0" styleClass="menu-btn">
+                  <HBox fx:id="menuPreferiti" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#handleFilterPreferiti" prefHeight="50.0" prefWidth="165.0" spacing="3.0" styleClass="menu-btn">
                      <children>
                         <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -123,14 +122,14 @@
                         <Font name="Segoe UI Bold" size="23.0" />
                      </font>
                   </Text>
-                  <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="165.0" spacing="3.0" styleClass="menu-btn">
+                  <HBox fx:id="menuOfferte" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#handleFilterOfferte" prefHeight="50.0" prefWidth="165.0" spacing="3.0" styleClass="menu-btn">
                      <children>
                         <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@imgs/ordini.png" />
                            </image>
                         </ImageView>
-                        <Label alignment="BOTTOM_LEFT" text="Trattative" textFill="WHITE">
+                        <Label alignment="BOTTOM_LEFT" text="Offerte" textFill="WHITE">
                            <font>
                               <Font name="SansSerif Bold" size="18.0" />
                            </font>
@@ -140,7 +139,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </HBox>
-                  <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="165.0" spacing="3.0" styleClass="menu-btn">
+                  <HBox fx:id="menuRecensioni" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#handleFilterRecensioni" prefHeight="50.0" prefWidth="165.0" spacing="3.0" styleClass="menu-btn">
                      <children>
                         <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -157,12 +156,12 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </HBox>
-                  <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="165.0" spacing="3.0" styleClass="menu-btn">
+                  <HBox fx:id="menuStatistiche" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#handleFilterStatistiche" prefHeight="50.0" prefWidth="165.0" spacing="3.0" styleClass="menu-btn">
                      <children>
                         <ImageView fitHeight="40.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@imgs/statistiche.png" />
-                           </image>
+                          </image>
                         </ImageView>
                         <Label text="Statistiche" textFill="WHITE">
                            <font>
@@ -259,12 +258,12 @@
          <center>
             <VBox spacing="12.0" styleClass="content-panel" BorderPane.alignment="CENTER">
                <padding>
-                  <Insets top="14" right="14" bottom="14" left="14"/>
+                  <Insets bottom="14" left="14" right="14" top="14" />
                </padding>
 
                <children>
                   <!-- barra filtri -->
-                  <HBox fx:id="filterBar" spacing="6" alignment="CENTER_LEFT" styleClass="filter-bar">
+                  <HBox fx:id="filterBar" alignment="CENTER_LEFT" spacing="6" styleClass="filter-bar">
                      <children>
                         <ToggleButton fx:id="btnTutti" text="Tutti" />
                         <ToggleButton fx:id="btnLibri" text="Libri" />
@@ -277,19 +276,11 @@
                   </HBox>
 
                   <!-- scroll annunci -->
-                  <ScrollPane fx:id="scrollAnnunci"
-                              fitToWidth="true"
-                              pannable="true"
-                              styleClass="unina-scroll"
-                              VBox.vgrow="ALWAYS">
+                  <ScrollPane fx:id="scrollAnnunci" fitToWidth="true" pannable="true" styleClass="unina-scroll" VBox.vgrow="ALWAYS">
                      <content>
-                        <TilePane fx:id="tileAnnunci"
-                                  prefColumns="4"
-                                  hgap="18" vgap="18"
-                                  tileAlignment="TOP_LEFT"
-                                  styleClass="annunci-grid">
+                        <TilePane fx:id="tileAnnunci" hgap="18" prefColumns="4" styleClass="annunci-grid" tileAlignment="TOP_LEFT" vgap="18">
                            <padding>
-                              <Insets top="6" right="6" bottom="6" left="6"/>
+                              <Insets bottom="6" left="6" right="6" top="6" />
                            </padding>
                         </TilePane>
                      </content>
