@@ -26,6 +26,13 @@ public class statisticheDAO {
         public BigDecimal minVendita;
         public BigDecimal maxVendita;
         public BigDecimal mediaVendita;
+        public int accettateVenditaCount;
+
+        // come VENDITORE: offerte di vendita che ho accettato
+        public int accettateComeVenditoreVendita;
+        public BigDecimal minAccettateVenditore;
+        public BigDecimal maxAccettateVenditore;
+        public BigDecimal mediaAccettateVenditore;
     }
 
     public Statistiche getStatistiche(String matricola) throws Exception {
@@ -33,6 +40,7 @@ public class statisticheDAO {
         loadInviate(matricola, s);
         loadAccettate(matricola, s);
         loadVenditaAccettateStats(matricola, s);
+        loadVenditeAccettateDaMeStats(matricola, s);
         return s;
     }
 
@@ -89,7 +97,8 @@ public class statisticheDAO {
         String sql = """
             SELECT min(o.importo_proposto) AS minp,
                    max(o.importo_proposto) AS maxp,
-                   avg(o.importo_proposto) AS avgp
+                   avg(o.importo_proposto) AS avgp,
+                   count(*) AS cnt
             FROM offerta o
             JOIN annuncio a ON a.id_annuncio = o.id_annuncio
             WHERE o.matricola_offerente = ?
@@ -104,6 +113,36 @@ public class statisticheDAO {
                     s.minVendita = rs.getBigDecimal("minp");
                     s.maxVendita = rs.getBigDecimal("maxp");
                     s.mediaVendita = rs.getBigDecimal("avgp");
+                    s.accettateVenditaCount = rs.getInt("cnt");
+                }
+            }
+        }
+    }
+
+    /**
+     * Statistiche sulle offerte che il VENDITORE ha accettato per annunci di vendita.
+     */
+    private void loadVenditeAccettateDaMeStats(String matricolaVenditore, Statistiche s) throws Exception {
+        String sql = """
+            SELECT count(*) AS cnt,
+                   min(o.importo_proposto) AS minp,
+                   max(o.importo_proposto) AS maxp,
+                   avg(o.importo_proposto) AS avgp
+            FROM offerta o
+            JOIN annuncio a ON a.id_annuncio = o.id_annuncio
+            WHERE a.matricola_venditore = ?
+              AND o.stato = 'accettata'::stato_offerta_enum
+              AND a.tipo = 'vendita'::tipo_annuncio_enum
+              AND o.importo_proposto IS NOT NULL
+        """;
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, matricolaVenditore);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    s.accettateComeVenditoreVendita = rs.getInt("cnt");
+                    s.minAccettateVenditore = rs.getBigDecimal("minp");
+                    s.maxAccettateVenditore = rs.getBigDecimal("maxp");
+                    s.mediaAccettateVenditore = rs.getBigDecimal("avgp");
                 }
             }
         }

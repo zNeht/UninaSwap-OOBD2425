@@ -13,6 +13,13 @@ public class statisticheController {
     @FXML private PieChart pieInviate;
     @FXML private PieChart pieAccettate;
     @FXML private Label lblStatsVendita;
+    @FXML private Label lblInviateVendita;
+    @FXML private Label lblInviateScambio;
+    @FXML private Label lblInviateRegalo;
+    @FXML private Label lblAccettateVendita;
+    @FXML private Label lblAccettateScambio;
+    @FXML private Label lblAccettateRegalo;
+    @FXML private Label lblAccettateVenditore;
 
     public void loadData() {
         String matricola = Session.getMatricola();
@@ -26,6 +33,8 @@ public class statisticheController {
             renderPie(pieInviate, s.inviateVendita, s.inviateScambio, s.inviateRegalo, "Offerte inviate per tipologia");
             renderPie(pieAccettate, s.accettateVendita, s.accettateScambio, s.accettateRegalo, "Offerte accettate per tipologia");
             lblStatsVendita.setText(formatVenditaStats(s));
+            renderCounts(s);
+            renderVenditeAccettateDaVenditore(s);
         } catch (Exception ex) {
             ex.printStackTrace();
             lblStatsVendita.setText("Errore nel caricamento delle statistiche");
@@ -53,6 +62,35 @@ public class statisticheController {
         String min = s.minVendita != null ? "€ " + s.minVendita : "-";
         String max = s.maxVendita != null ? "€ " + s.maxVendita : "-";
         String avg = s.mediaVendita != null ? "€ " + s.mediaVendita.setScale(2, java.math.RoundingMode.HALF_UP) : "-";
-        return "Min: " + min + "   Max: " + max + "   Media: " + avg;
+        String count = s.accettateVenditaCount > 0 ? String.valueOf(s.accettateVenditaCount) : "0";
+        return "Totale: " + count + "   Min: " + min + "   Max: " + max + "   Media: " + avg;
+    }
+
+    private void renderCounts(statisticheDAO.Statistiche s) {
+        if (lblInviateVendita != null) {
+            lblInviateVendita.setText("Vendita: " + s.inviateVendita);
+            lblInviateScambio.setText("Scambio: " + s.inviateScambio);
+            lblInviateRegalo.setText("Regalo: " + s.inviateRegalo);
+            lblAccettateVendita.setText("Vendita: " + s.accettateVendita);
+            lblAccettateScambio.setText("Scambio: " + s.accettateScambio);
+            lblAccettateRegalo.setText("Regalo: " + s.accettateRegalo);
+        }
+    }
+
+    private void renderVenditeAccettateDaVenditore(statisticheDAO.Statistiche s) {
+        if (lblAccettateVenditore == null) return;
+        if (s.accettateComeVenditoreVendita == 0) {
+            lblAccettateVenditore.setText("Nessuna vendita accettata come venditore.");
+            return;
+        }
+        String min = fmtCurrency(s.minAccettateVenditore);
+        String max = fmtCurrency(s.maxAccettateVenditore);
+        String avg = fmtCurrency(s.mediaAccettateVenditore);
+        lblAccettateVenditore.setText("Totale: " + s.accettateComeVenditoreVendita + "   Min: " + min + "   Max: " + max + "   Media: " + avg);
+    }
+
+    private String fmtCurrency(java.math.BigDecimal v) {
+        if (v == null) return "-";
+        return "€ " + v.setScale(2, java.math.RoundingMode.HALF_UP);
     }
 }

@@ -29,7 +29,30 @@
         </padding>
 
         <StackPane styleClass="detail-hero">
-            <ImageView fx:id="imgMain" fitHeight="160" preserveRatio="false"/>
+            <ImageView fx:id="imgMain"
+                       fitHeight="200"
+                       preserveRatio="true"
+                       onMouseClicked="#handleImageClick"/>
+
+            <Button fx:id="btnPrevImg"
+                    text="‹"
+                    onAction="#handlePrevImage"
+                    StackPane.alignment="CENTER_LEFT">
+                <styleClass>
+                    <String fx:value="detail-nav"/>
+                    <String fx:value="detail-nav-left"/>
+                </styleClass>
+            </Button>
+            <Button fx:id="btnNextImg"
+                    text="›"
+                    onAction="#handleNextImage"
+                    StackPane.alignment="CENTER_RIGHT">
+                <styleClass>
+                    <String fx:value="detail-nav"/>
+                    <String fx:value="detail-nav-right"/>
+                </styleClass>
+            </Button>
+
             <Label fx:id="lblTipoBadge" styleClass="badge-tipo" StackPane.alignment="TOP_LEFT"/>
             <Button text="✕" onAction="#handleClose" styleClass="detail-close" StackPane.alignment="TOP_RIGHT"/>
         </StackPane>

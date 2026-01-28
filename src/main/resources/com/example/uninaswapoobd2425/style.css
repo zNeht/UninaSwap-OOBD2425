@@ -652,6 +652,24 @@
     -fx-text-fill: #2B2B2B;
 }
 
+.detail-nav {
+    -fx-background-color: rgba(0,0,0,0.40);
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-border-color: rgba(255,255,255,0.45);
+    -fx-text-fill: white;
+    -fx-font-size: 18;
+    -fx-font-weight: 900;
+    -fx-min-width: 36;
+    -fx-min-height: 36;
+    -fx-cursor: hand;
+}
+.detail-nav:hover {
+    -fx-background-color: rgba(0,0,0,0.55);
+}
+.detail-nav-left { -fx-translate-x: -8; }
+.detail-nav-right { -fx-translate-x: 8; }
+
 
 /* Sezioni */
 .section-box {

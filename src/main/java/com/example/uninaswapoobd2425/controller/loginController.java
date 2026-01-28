@@ -5,6 +5,7 @@ import com.example.uninaswapoobd2425.model.Session;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -44,7 +45,6 @@ public class loginController {
     private double yOffset = 0;
 
     public void initialize() {
-        Session.clear();
         if (rootPane != null) {
             rootPane.setOnMousePressed(event -> {
                 xOffset = event.getSceneX();
@@ -57,6 +57,7 @@ public class loginController {
                 stage.setY(event.getScreenY() - yOffset);
             });
         }
+        autoLoginIfRemembered();
     }
     @FXML
     void handleMinimize(ActionEvent event) {
@@ -161,7 +162,11 @@ public class loginController {
 
     private void openHomepage(ActionEvent event) {
         Node sourceNode = (Node) event.getSource();
-        Scene currentScene = sourceNode.getScene();
+        openHomepage(sourceNode.getScene());
+    }
+
+    private void openHomepage(Scene currentScene) {
+        if (currentScene == null) return;
         Parent root = currentScene.getRoot();
 
         FadeTransition fadeOut = new FadeTransition(Duration.millis(250), root);
@@ -191,6 +196,16 @@ public class loginController {
         });
 
         fadeOut.play();
+    }
+
+    private void autoLoginIfRemembered() {
+        if (rootPane == null) return;
+        Platform.runLater(() -> {
+            String saved = Session.getMatricola();
+            if (saved != null && !saved.isBlank()) {
+                openHomepage(rootPane.getScene());
+            }
+        });
     }
 
     private void attachWindowDrag(Stage stage, Parent root) {

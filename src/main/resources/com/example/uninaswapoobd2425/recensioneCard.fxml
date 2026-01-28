@@ -5,35 +5,33 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.uninaswapoobd2425.controller.recensioneCardController"
-      spacing="12" styleClass="card" prefWidth="280" maxWidth="280" minWidth="280" fillWidth="true">
+<VBox fillWidth="true" maxWidth="280" minWidth="280" prefWidth="280" spacing="12" styleClass="card" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uninaswapoobd2425.controller.recensioneCardController">
     <padding>
-        <Insets top="14" right="16" bottom="14" left="16"/>
+        <Insets bottom="14" left="16" right="16" top="14" />
     </padding>
 
-    <VBox spacing="4">
-        <Label fx:id="lblTitolo" styleClass="offer-title" wrapText="true"/>
-        <HBox spacing="6" alignment="CENTER_LEFT">
-            <Label fx:id="lblUtenteTitle" text="Utente" styleClass="offer-muted"/>
-            <Label fx:id="lblUtente" styleClass="offer-note"/>
+    <VBox prefHeight="56.0" prefWidth="257.0" spacing="4">
+   
+       <HBox fx:id="starsBox" alignment="CENTER" spacing="4">
+           <Label fx:id="star1" styleClass="review-star" text="★" />
+           <Label fx:id="star2" styleClass="review-star" text="★" />
+           <Label fx:id="star3" styleClass="review-star" text="★" />
+           <Label fx:id="star4" styleClass="review-star" text="★" />
+           <Label fx:id="star5" styleClass="review-star" text="★" />
+       </HBox>
+        <Label fx:id="lblTitolo" styleClass="offer-title" text="Titolo coso" wrapText="true" />
+        <HBox alignment="CENTER_LEFT" spacing="6">
+            <Label fx:id="lblUtenteTitle" styleClass="offer-muted" text="Utente:" />
+            <Label fx:id="lblUtente" styleClass="offer-note" text="N86005478" />
         </HBox>
-        <HBox spacing="6" alignment="CENTER_LEFT">
-            <Label text="Data" styleClass="offer-muted"/>
-            <Label fx:id="lblData" styleClass="offer-note"/>
+        <HBox alignment="CENTER_LEFT" spacing="6">
+            <Label styleClass="offer-muted" text="Data" />
+            <Label fx:id="lblData" styleClass="offer-note" text="25/12/2021" />
         </HBox>
     </VBox>
 
-    <HBox fx:id="starsBox" alignment="CENTER" spacing="4">
-        <Label fx:id="star1" text="★" styleClass="review-star"/>
-        <Label fx:id="star2" text="★" styleClass="review-star"/>
-        <Label fx:id="star3" text="★" styleClass="review-star"/>
-        <Label fx:id="star4" text="★" styleClass="review-star"/>
-        <Label fx:id="star5" text="★" styleClass="review-star"/>
-    </HBox>
-
     <VBox spacing="4">
-        <Label text="Commento" styleClass="offer-muted"/>
-        <Label fx:id="lblCommento" wrapText="true" styleClass="offer-note"/>
+        <Label styleClass="offer-muted" text="Commento" />
+        <Label fx:id="lblCommento" styleClass="offer-note" text="Porva comment" wrapText="true" />
     </VBox>
 </VBox>

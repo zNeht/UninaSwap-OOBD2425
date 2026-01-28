@@ -3,6 +3,7 @@ package com.example.uninaswapoobd2425.dao;
 import com.example.uninaswapoobd2425.controller.ImageHandler;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class immagineAnnuncioDAO {
@@ -32,5 +33,25 @@ public class immagineAnnuncioDAO {
             }
             ps.executeBatch();
         }
+    }
+
+    public List<String> getImagePathsByAnnuncio(int idAnnuncio) throws SQLException {
+        String sql = """
+            SELECT path
+            FROM immagine_annuncio
+            WHERE id_annuncio = ?
+            ORDER BY is_principale DESC, ordine ASC, uploaded_at ASC
+        """;
+
+        List<String> paths = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idAnnuncio);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    paths.add(rs.getString("path"));
+                }
+            }
+        }
+        return paths;
     }
 }

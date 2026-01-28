@@ -11,6 +11,7 @@ module com.example.uninaswapoobd2425 {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.sql;
+    requires java.prefs;
     requires javafx.base;
     requires javafx.graphics;
 

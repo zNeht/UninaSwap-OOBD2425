@@ -4,28 +4,52 @@
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.uninaswapoobd2425.controller.statisticheController"
-      spacing="14" styleClass="offers-page">
+<VBox spacing="14" styleClass="offers-page" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uninaswapoobd2425.controller.statisticheController">
     <padding>
-        <Insets top="6" right="10" bottom="6" left="10"/>
+        <Insets bottom="6" left="10" right="10" top="6" />
     </padding>
 
-    <Label text="Statistiche offerte" styleClass="section-title"/>
+    <Label styleClass="section-title" text="Statistiche offerte" />
 
     <HBox spacing="12">
-        <PieChart fx:id="pieInviate" title="Offerte inviate per tipologia" prefWidth="360" prefHeight="260"/>
-        <PieChart fx:id="pieAccettate" title="Offerte accettate per tipologia" prefWidth="360" prefHeight="260"/>
+        <VBox spacing="8">
+            <PieChart fx:id="pieInviate" prefHeight="260" prefWidth="360" title="Offerte inviate per tipologia" />
+            <VBox spacing="4">
+                <Label styleClass="offer-title" text="Totale offerte inviate" />
+                <Label fx:id="lblInviateVendita" styleClass="offer-note" />
+                <Label fx:id="lblInviateScambio" styleClass="offer-note" />
+                <Label fx:id="lblInviateRegalo" styleClass="offer-note" />
+            </VBox>
+        </VBox>
+
+        <VBox spacing="8">
+            <PieChart fx:id="pieAccettate" prefHeight="260" prefWidth="360" title="Offerte accettate per tipologia" />
+            <VBox spacing="4">
+                <Label styleClass="offer-title" text="Totale offerte accettate" />
+                <Label fx:id="lblAccettateVendita" styleClass="offer-note" />
+                <Label fx:id="lblAccettateScambio" styleClass="offer-note" />
+                <Label fx:id="lblAccettateRegalo" styleClass="offer-note" />
+            </VBox>
+        </VBox>
     </HBox>
 
-    <VBox spacing="6" styleClass="card" maxWidth="400">
-        <padding>
-            <Insets top="10" right="12" bottom="10" left="12"/>
-        </padding>
-        <Label text="Vendita accettate - Importo proposto" styleClass="offer-title"/>
-        <Label fx:id="lblStatsVendita" styleClass="offer-note" wrapText="true"/>
-    </VBox>
+    <HBox spacing="12">
+        <VBox maxWidth="400" spacing="6" styleClass="card" HBox.hgrow="ALWAYS">
+            <padding>
+                <Insets bottom="10" left="12" right="12" top="10" />
+            </padding>
+            <Label styleClass="offer-title" text="Vendite accettate - Pagamenti" />
+            <Label fx:id="lblStatsVendita" styleClass="offer-note" wrapText="true" />
+        </VBox>
+
+        <VBox maxWidth="420" spacing="6" styleClass="card" HBox.hgrow="ALWAYS">
+            <padding>
+                <Insets bottom="10" left="12" right="12" top="10" />
+            </padding>
+            <Label styleClass="offer-title" text="Vendite accettate - Incassi" />
+            <Label fx:id="lblAccettateVenditore" styleClass="offer-note" wrapText="true" />
+        </VBox>
+    </HBox>
 </VBox>
