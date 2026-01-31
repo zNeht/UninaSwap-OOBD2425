@@ -37,6 +37,7 @@ public class offertaCardController {
     @FXML private ImageView imgAnnuncio;
     @FXML private HBox actionBar;
     @FXML private Button btnOggetti;
+    @FXML private Button btnMessaggio;
     @FXML private Button btnModifica;
     @FXML private Button btnRitira;
     @FXML private Button btnRecensisci;
@@ -44,6 +45,7 @@ public class offertaCardController {
     private Runnable onModifica = () -> {};
     private Runnable onRitira = () -> {};
     private Runnable onViewItems = () -> {};
+    private Runnable onViewMessage = () -> {};
     private Consumer<RecensioneInput> onRecensisci = r -> {};
 
     @FXML
@@ -51,6 +53,7 @@ public class offertaCardController {
         showReviewButton(false);
         showModifyWithdraw(true);
         showItemsButton(false);
+        showMessageButton(false);
     }
 
     public void setData(offertaDAO.OfferView v) {
@@ -141,6 +144,13 @@ public class offertaCardController {
         }
     }
 
+    public void showMessageButton(boolean show) {
+        if (btnMessaggio != null) {
+            btnMessaggio.setVisible(show);
+            btnMessaggio.setManaged(show);
+        }
+    }
+
     public void setHandlers(Runnable onModifica, Runnable onRitira) {
         this.onModifica = onModifica != null ? onModifica : () -> {};
         this.onRitira = onRitira != null ? onRitira : () -> {};
@@ -152,6 +162,10 @@ public class offertaCardController {
 
     public void setOnViewItems(Runnable handler) {
         this.onViewItems = handler != null ? handler : () -> {};
+    }
+
+    public void setOnViewMessage(Runnable handler) {
+        this.onViewMessage = handler != null ? handler : () -> {};
     }
 
     @FXML
@@ -167,6 +181,11 @@ public class offertaCardController {
     @FXML
     private void handleViewItems() {
         onViewItems.run();
+    }
+
+    @FXML
+    private void handleViewMessage() {
+        onViewMessage.run();
     }
 
     @FXML

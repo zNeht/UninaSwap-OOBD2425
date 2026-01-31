@@ -588,9 +588,9 @@ public class homepageController {
         box.setPrefWidth(240);
         box.setFillWidth(true);
 
-        Button dashboard = buildMenuButton("▦", "Dashboard", null, createStatusDot(), () -> {});
-        Button account = buildMenuButton("👤", "Account", null, null, () -> {});
-        Button settings = buildMenuButton("⚙️", "Settings", null, null, () -> {});
+        Button dashboard = buildMenuButton("▦", "Homepage", null, createStatusDot(), () -> {});
+        Button account = buildMenuButton("👤", "Account (W.I.P)", null, null, () -> {});
+        Button settings = buildMenuButton("⚙️", "Settings (W.I.P)", null, null, () -> {});
         Button logout = buildMenuButton("↺", "Log out", null, null, this::handleLogout);
         logout.getStyleClass().add("profile-menu-item-last");
 

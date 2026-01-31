@@ -96,6 +96,7 @@ public class offerteController {
             } else {
                 c.showItemsButton(false);
             }
+            configureMessageButton(c, v);
 
             if (v.stato == statoOfferta.accettata) {
                 tileRicevuteAccettate.getChildren().add(card);
@@ -143,6 +144,7 @@ public class offerteController {
                     },
                     () -> handleRitira(v)
             );
+            configureMessageButton(c, v);
 
             if (v.stato == statoOfferta.accettata) {
                 boolean alreadyReviewed = matricola != null && !matricola.isBlank()
@@ -167,6 +169,15 @@ public class offerteController {
             } else {
                 tileInviateAttive.getChildren().add(card);
             }
+        }
+    }
+
+    private void configureMessageButton(offertaCardController c, offertaDAO.OfferView v) {
+        boolean hasMessage = v.messaggio != null && !v.messaggio.isBlank();
+        boolean show = v.tipo == tipoAnnuncio.regalo || hasMessage;
+        c.showMessageButton(show);
+        if (show) {
+            c.setOnViewMessage(() -> openMessaggioOfferta(v.messaggio));
         }
     }
 
@@ -382,6 +393,17 @@ public class offerteController {
             ex.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "Errore nel caricamento degli oggetti di scambio").showAndWait();
         }
+    }
+
+    private void openMessaggioOfferta(String messaggio) {
+        String testo = (messaggio == null || messaggio.isBlank())
+                ? "Nessun messaggio inserito."
+                : messaggio.trim();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Messaggio offerta");
+        alert.setHeaderText(null);
+        alert.setContentText(testo);
+        alert.showAndWait();
     }
 
     private void handleNuovaOfferta(offertaDAO.OfferView v) {

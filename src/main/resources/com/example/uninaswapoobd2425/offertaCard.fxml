@@ -45,6 +45,7 @@
 
     <VBox spacing="8">
         <Button fx:id="btnOggetti" text="Oggetti offerti" onAction="#handleViewItems" styleClass="btn-ghost"/>
+        <Button fx:id="btnMessaggio" text="Vedi messaggio" onAction="#handleViewMessage" styleClass="btn-ghost"/>
         <HBox fx:id="actionBar" spacing="8" alignment="CENTER_LEFT">
             <Button fx:id="btnModifica" text="Modifica offerta" onAction="#handleModifica" styleClass="btn-primary"/>
             <Button fx:id="btnRitira" text="Annulla offerta" onAction="#handleRitira" styleClass="btn-ghost"/>
