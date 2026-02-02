@@ -33,6 +33,7 @@ public class annuncioCardController {
     private boolean suppressWishlistEvent = false;
     private boolean removeOnUnfavorite = false;
 
+    //Imposto l'icona wishlist vuota e count a 0 e blocco il click diretto sul bottone toggle
     @FXML
     private void initialize() {
         updateWishlistVisual(false);
@@ -40,10 +41,12 @@ public class annuncioCardController {
         btnWishlist.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseEvent::consume);
     }
 
+    //Wrapper che chiama la versione completa di setData il dove removeOnUnFavorite è false
     public void setData(annuncio a, boolean wishlisted, int wishlistCount) {
         setData(a, wishlisted, wishlistCount, false);
     }
 
+    //Riempie la card con titolo , categoria , prezzo ecc.. e lo stato della wishlist
     public void setData(annuncio a, boolean wishlisted, int wishlistCount, boolean removeOnUnfavorite) {
         this.ann = a;
         this.removeOnUnfavorite = removeOnUnfavorite;
@@ -87,6 +90,7 @@ public class annuncioCardController {
         }
     }
 
+    //Gestisce la rimozione/aggiunta ai preferiti sul DB e se richiesto rimuove la card
     @FXML
     private void handleWishlist() {
         if (suppressWishlistEvent || ann == null) {
@@ -123,7 +127,7 @@ public class annuncioCardController {
             removeFromParent();
         }
     }
-
+    //Rende cliccabile tutta la pill invece di cliccare solo il cuore
     @FXML
     private void handleWishlistPill(MouseEvent event) {
         if (event != null) {
@@ -134,7 +138,7 @@ public class annuncioCardController {
         }
         btnWishlist.fire();
     }
-
+    //Rollback se login mancante o errore DB
     private void revertWishlist() {
         suppressWishlistEvent = true;
         btnWishlist.setSelected(!btnWishlist.isSelected());
@@ -142,10 +146,12 @@ public class annuncioCardController {
         suppressWishlistEvent = false;
     }
 
+    // Aggiorna l'icona del cuore in base allo stato.
     private void updateWishlistVisual(boolean selected) {
         btnWishlist.setText(selected ? "♥" : "♡");
     }
 
+    //Converte il numero della label in int
     private int parseWishlistCount() {
         try {
             return Integer.parseInt(lblWishlistCount.getText());
@@ -153,7 +159,7 @@ public class annuncioCardController {
             return 0;
         }
     }
-
+    //Rimuove la card dal TilePane (Caso nella sezione preferiti)
     private void removeFromParent() {
         if (btnWishlist.getScene() == null) return;
         javafx.scene.Node node = btnWishlist;
@@ -165,6 +171,7 @@ public class annuncioCardController {
         }
     }
 
+    // Capitalizza la prima lettera per la UI.
     private String capitalize(String s) {
         if (s == null || s.isBlank()) return "";
         String t = s.trim();

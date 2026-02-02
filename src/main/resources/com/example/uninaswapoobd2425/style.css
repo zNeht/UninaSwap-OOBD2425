@@ -817,3 +817,14 @@
     -fx-font-weight: 900;
     -fx-text-fill: #2B2B2B;
 }
+ 
+.offer-detail-label { 
+    -fx-text-fill: #8B7F72; 
+    -fx-font-size: 12px; 
+    -fx-font-weight: bold; 
+} 
+ 
+.offer-detail-value { 
+    -fx-text-fill: #3D362F; 
+    -fx-font-size: 12px; 
+}

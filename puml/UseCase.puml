@@ -1,0 +1,45 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+left to right direction
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam packageStyle rectangle
+
+actor "Utente" as User
+
+rectangle "UninaSwap" {
+  usecase "Registrazione" as UC_Register
+  usecase "Login" as UC_Login
+  usecase "Visualizza annunci" as UC_View
+  usecase "Filtra annunci\n(categoria/tipologia)" as UC_Filter
+  usecase "Vedi dettaglio annuncio" as UC_Detail
+  usecase "Invia offerta\n(vendita/scambio/regalo)" as UC_Offer
+  usecase "Modifica offerta" as UC_Modify
+  usecase "Ritira offerta" as UC_Withdraw
+  usecase "Visualizza offerte inviate\n(con stato)" as UC_History
+  usecase "Visualizza statistiche" as UC_Stats
+  usecase "Visualizza recensioni" as UC_ViewReviews
+  usecase "Inserisci recensione\n(post-accettazione)" as UC_AddReview
+}
+
+User --> UC_Register
+User --> UC_Login
+User --> UC_View
+User --> UC_Filter
+User --> UC_Detail
+User --> UC_Offer
+User --> UC_Modify
+User --> UC_Withdraw
+User --> UC_History
+User --> UC_Stats
+User --> UC_ViewReviews
+User --> UC_AddReview
+
+UC_Filter .> UC_View : <<extend>>
+UC_Detail .> UC_View : <<extend>>
+UC_Modify .> UC_History : <<extend>>
+UC_Withdraw .> UC_History : <<extend>>
+UC_AddReview .> UC_History : <<extend>>
+
+@enduml

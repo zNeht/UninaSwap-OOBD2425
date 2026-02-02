@@ -10,10 +10,12 @@ import java.sql.ResultSet;
 public class statisticheDAO {
     private final Connection conn;
 
+    // Crea il DAO con una connessione gia' aperta.
     public statisticheDAO(Connection conn) {
         this.conn = conn;
     }
 
+    // DTO aggregato per le statistiche visualizzate nella UI.
     public static class Statistiche {
         public int inviateVendita;
         public int inviateScambio;
@@ -35,6 +37,7 @@ public class statisticheDAO {
         public BigDecimal mediaAccettateVenditore;
     }
 
+    // Calcola tutte le statistiche per l'utente indicato.
     public Statistiche getStatistiche(String matricola) throws Exception {
         Statistiche s = new Statistiche();
         loadInviate(matricola, s);
@@ -44,6 +47,7 @@ public class statisticheDAO {
         return s;
     }
 
+    // Conta le offerte inviate dall'utente per tipo annuncio.
     private void loadInviate(String matricola, Statistiche s) throws Exception {
         String sql = """
             SELECT a.tipo, count(*) AS cnt
@@ -68,6 +72,7 @@ public class statisticheDAO {
         }
     }
 
+    // Conta le offerte accettate dell'utente per tipo annuncio.
     private void loadAccettate(String matricola, Statistiche s) throws Exception {
         String sql = """
             SELECT a.tipo, count(*) AS cnt
@@ -93,6 +98,7 @@ public class statisticheDAO {
         }
     }
 
+    // Statistiche (min/max/media) sulle offerte di vendita accettate dall'utente.
     private void loadVenditaAccettateStats(String matricola, Statistiche s) throws Exception {
         String sql = """
             SELECT min(o.importo_proposto) AS minp,
@@ -122,6 +128,7 @@ public class statisticheDAO {
     /**
      * Statistiche sulle offerte che il VENDITORE ha accettato per annunci di vendita.
      */
+    // Statistiche lato venditore sulle offerte di vendita accettate.
     private void loadVenditeAccettateDaMeStats(String matricolaVenditore, Statistiche s) throws Exception {
         String sql = """
             SELECT count(*) AS cnt,

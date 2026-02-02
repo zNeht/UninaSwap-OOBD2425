@@ -1,0 +1,32 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+actor Utente
+participant "homepageController" as Home
+participant "dettaglioAnnuncioController" as Dettaglio
+participant "offerVenditaController" as OfferUI
+participant "DB" as DB
+
+Utente -> Home: seleziona annuncio
+Home -> Dettaglio: openDettaglio(annuncio)
+Dettaglio -> OfferUI: init(annuncio)
+
+Utente -> OfferUI: inserisce importo\nclick "Invia"
+OfferUI -> DB: getConnection()
+DB --> OfferUI: Connection
+OfferUI -> DB: verifica self-offer\nSELECT matricola_venditore
+DB --> OfferUI: venditore
+alt annuncio proprio
+  OfferUI -> Utente: Alert "Non puoi fare un'offerta"
+else
+  OfferUI -> DB: verifica offerta attiva\nSELECT 1 FROM offerta
+  DB --> OfferUI: exists?
+  alt offerta gia' inviata
+    OfferUI -> Utente: Alert "Hai gia' inviato un'offerta"
+  else
+    OfferUI -> DB: INSERT offerta\n(stato=in_attesa)
+    DB --> OfferUI: id_offerta
+    OfferUI -> Utente: Alert "Offerta inviata!"
+  end
+end
+@enduml

@@ -19,6 +19,7 @@ public class offerRegaloController implements offerPaneController {
     private annuncio ann;
 
     @Override
+    // Inizializza il pannello regalo e il contatore caratteri.
     public void init(annuncio a) {
         this.ann = a;
         txtMsg.textProperty().addListener((obs, o, n) -> {
@@ -28,6 +29,7 @@ public class offerRegaloController implements offerPaneController {
     }
 
     @FXML
+    // Valida e invia una richiesta di regalo.
     private void handleInvia() {
         if (txtMsg.getText().trim().isEmpty()) {
             new Alert(Alert.AlertType.WARNING, "Inserisci un messaggio.").showAndWait();
@@ -57,6 +59,7 @@ public class offerRegaloController implements offerPaneController {
         }
     }
 
+    // Inserisce l'offerta regalo nel DB e restituisce l'id.
     private int insertOfferta(Connection conn, String matricola, String messaggio) throws Exception {
         String sql = """
             INSERT INTO offerta (id_annuncio, matricola_offerente, stato, importo_proposto, messaggio, data_offerta)
@@ -80,6 +83,7 @@ public class offerRegaloController implements offerPaneController {
         throw new Exception("Impossibile ottenere id_offerta (RETURNING vuoto)");
     }
 
+    // Verifica se esiste gia' un'offerta attiva per questo annuncio.
     private boolean hasActiveOffer(Connection conn, String matricola) throws Exception {
         String sql = """
             SELECT 1
@@ -96,6 +100,7 @@ public class offerRegaloController implements offerPaneController {
         }
     }
 
+    // Blocca offerte verso il proprio annuncio.
     private boolean isSelfOffer(Connection conn, String matricola) throws Exception {
         String sql = "SELECT matricola_venditore FROM annuncio WHERE id_annuncio = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

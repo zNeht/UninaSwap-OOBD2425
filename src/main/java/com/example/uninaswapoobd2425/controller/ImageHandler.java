@@ -14,11 +14,13 @@ public class ImageHandler {
 
     public record SavedImage(String pathRelativoDb, int ordine, boolean isPrincipale, LocalDateTime uploadedAt) {}
 
+    // Inizializza la cartella base per il salvataggio immagini.
     public ImageHandler() {
         // cartella esterna al jar/resources
         this.baseDir = Paths.get(System.getProperty("user.dir"), "imgAnnunci");
     }
 
+    // Salva su disco le immagini selezionate e ritorna i metadati per il DB.
     public List<SavedImage> saveImages(int idAnnuncio, List<File> selectedFiles) throws IOException {
         if (selectedFiles == null) return List.of();
         if (selectedFiles.size() > MAX_IMG) throw new IllegalArgumentException("Massimo 5 immagini");
@@ -47,11 +49,13 @@ public class ImageHandler {
     }
 
     /** Risolve il path relativo DB in un file reale per caricarlo in JavaFX */
+    // Converte un path relativo DB in path assoluto locale.
     public Path resolveToAbsolute(String dbPath) {
         // dbPath: imgAnnunci/123/...
         return Paths.get(System.getProperty("user.dir")).resolve(dbPath);
     }
 
+    // Estrae l'estensione del file in minuscolo.
     private String getExt(String name) {
         int dot = name.lastIndexOf('.');
         if (dot < 0 || dot == name.length() - 1) return "";

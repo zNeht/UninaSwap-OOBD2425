@@ -6,11 +6,11 @@ import java.sql.SQLException;
 
 public class DB {
 
-    // MODIFICA in base al tuo DB
     private static final String URL  = "jdbc:postgresql://localhost:5432/uninaswap";
     private static final String USER = "postgres";
     private static final String PASS = "admin";
 
+    // Apre una nuova connessione al DB con le credenziali configurate.
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASS);
     }

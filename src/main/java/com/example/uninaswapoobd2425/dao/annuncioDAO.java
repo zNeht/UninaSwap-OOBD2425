@@ -4,6 +4,7 @@ import com.example.uninaswapoobd2425.model.annuncio;
 import com.example.uninaswapoobd2425.model.categoriaAnnuncio;
 import com.example.uninaswapoobd2425.model.tipoAnnuncio;
 import com.example.uninaswapoobd2425.model.statoAnnuncio;
+import com.example.uninaswapoobd2425.model.utente;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +15,12 @@ public class annuncioDAO {
 
     private final Connection conn;
 
+    // Crea il DAO con una connessione gia' aperta.
     public annuncioDAO(Connection conn) {
         this.conn = conn;
     }
 
+    // Carica tutti gli annunci attivi con immagine principale (se presente).
     public List<annuncio> getAnnunciAttiviConImgPrincipale() throws SQLException {
 
         String sql = """
@@ -28,6 +31,7 @@ public class annuncioDAO {
                a.categoria,
                a.tipo,
                a.stato,
+               u.matricola AS venditore_matricola,
                u.mail AS venditore_mail,
                ia.path AS img_path
         FROM annuncio a
@@ -57,7 +61,11 @@ public class annuncioDAO {
                 an.setTipo(parseTipo(rs.getString("tipo")));
                 an.setStato(parseStato(rs.getString("stato")));
 
-                an.setVenditoreEmail(rs.getString("venditore_mail"));
+                // Mappa il venditore minimo necessario per UI (matricola + mail).
+                utente venditore = new utente();
+                venditore.setMatricola(rs.getString("venditore_matricola"));
+                venditore.setMail(rs.getString("venditore_mail"));
+                an.setVenditore(venditore);
                 an.setImmaginePath(rs.getString("img_path"));
 
                 out.add(an);
@@ -67,6 +75,7 @@ public class annuncioDAO {
         return out;
     }
 
+    // Carica annunci attivi filtrati per tipo.
     public List<annuncio> getAnnunciAttiviConImgPrincipaleByTipo(tipoAnnuncio tipo) throws SQLException {
         String sql = """
         SELECT a.id_annuncio,
@@ -76,6 +85,7 @@ public class annuncioDAO {
                a.categoria,
                a.tipo,
                a.stato,
+               u.matricola AS venditore_matricola,
                u.mail AS venditore_mail,
                ia.path AS img_path
         FROM annuncio a
@@ -106,7 +116,11 @@ public class annuncioDAO {
                     an.setTipo(parseTipo(rs.getString("tipo")));
                     an.setStato(parseStato(rs.getString("stato")));
 
-                    an.setVenditoreEmail(rs.getString("venditore_mail"));
+                    // Mappa il venditore minimo necessario per UI.
+                    utente venditore = new utente();
+                    venditore.setMatricola(rs.getString("venditore_matricola"));
+                    venditore.setMail(rs.getString("venditore_mail"));
+                    an.setVenditore(venditore);
                     an.setImmaginePath(rs.getString("img_path"));
 
                     out.add(an);
@@ -129,6 +143,7 @@ public class annuncioDAO {
                a.categoria,
                a.tipo,
                a.stato,
+               u.matricola AS venditore_matricola,
                u.mail AS venditore_mail,
                ia.path AS img_path
         FROM annuncio a
@@ -161,7 +176,11 @@ public class annuncioDAO {
                     an.setTipo(parseTipo(rs.getString("tipo")));
                     an.setStato(parseStato(rs.getString("stato")));
 
-                    an.setVenditoreEmail(rs.getString("venditore_mail"));
+                    // Mappa il venditore minimo necessario per UI.
+                    utente venditore = new utente();
+                    venditore.setMatricola(rs.getString("venditore_matricola"));
+                    venditore.setMail(rs.getString("venditore_mail"));
+                    an.setVenditore(venditore);
                     an.setImmaginePath(rs.getString("img_path"));
 
                     out.add(an);
@@ -172,6 +191,7 @@ public class annuncioDAO {
         return out;
     }
 
+    // Carica gli annunci preferiti di un utente (solo attivi).
     public List<annuncio> getAnnunciPreferitiByUtente(String matricola) throws SQLException {
         String sql = """
         SELECT a.id_annuncio,
@@ -181,6 +201,7 @@ public class annuncioDAO {
                a.categoria,
                a.tipo,
                a.stato,
+               u.matricola AS venditore_matricola,
                u.mail AS venditore_mail,
                ia.path AS img_path
         FROM wishlist w
@@ -213,7 +234,11 @@ public class annuncioDAO {
                     an.setTipo(parseTipo(rs.getString("tipo")));
                     an.setStato(parseStato(rs.getString("stato")));
 
-                    an.setVenditoreEmail(rs.getString("venditore_mail"));
+                    // Mappa il venditore minimo necessario per UI.
+                    utente venditore = new utente();
+                    venditore.setMatricola(rs.getString("venditore_matricola"));
+                    venditore.setMail(rs.getString("venditore_mail"));
+                    an.setVenditore(venditore);
                     an.setImmaginePath(rs.getString("img_path"));
 
                     out.add(an);
@@ -234,6 +259,7 @@ public class annuncioDAO {
                a.categoria,
                a.tipo,
                a.stato,
+               u.matricola AS venditore_matricola,
                u.mail AS venditore_mail,
                ia.path AS img_path
         FROM wishlist w
@@ -268,7 +294,11 @@ public class annuncioDAO {
                     an.setTipo(parseTipo(rs.getString("tipo")));
                     an.setStato(parseStato(rs.getString("stato")));
 
-                    an.setVenditoreEmail(rs.getString("venditore_mail"));
+                    // Mappa il venditore minimo necessario per UI.
+                    utente venditore = new utente();
+                    venditore.setMatricola(rs.getString("venditore_matricola"));
+                    venditore.setMail(rs.getString("venditore_mail"));
+                    an.setVenditore(venditore);
                     an.setImmaginePath(rs.getString("img_path"));
 
                     out.add(an);
@@ -279,6 +309,54 @@ public class annuncioDAO {
         return out;
     }
 
+    // Carica un annuncio per id con venditore e immagine principale.
+    public annuncio getAnnuncioById(int idAnnuncio) throws SQLException {
+        String sql = """
+        SELECT a.id_annuncio,
+               a.titolo,
+               a.descrizione,
+               a.prezzo,
+               a.categoria,
+               a.tipo,
+               a.stato,
+               u.matricola AS venditore_matricola,
+               u.mail AS venditore_mail,
+               ia.path AS img_path
+        FROM annuncio a
+        JOIN utente u
+          ON u.matricola = a.matricola_venditore
+        LEFT JOIN immagine_annuncio ia
+               ON ia.id_annuncio = a.id_annuncio
+              AND ia.is_principale = true
+        WHERE a.id_annuncio = ?
+        """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idAnnuncio);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    annuncio an = new annuncio();
+                    an.setIdAnnuncio(rs.getInt("id_annuncio"));
+                    an.setTitolo(rs.getString("titolo"));
+                    an.setDescrizione(rs.getString("descrizione"));
+                    an.setPrezzo(rs.getBigDecimal("prezzo"));
+                    an.setCategoria(parseCategoria(rs.getString("categoria")));
+                    an.setTipo(parseTipo(rs.getString("tipo")));
+                    an.setStato(parseStato(rs.getString("stato")));
+                    // Mappa il venditore minimo necessario per UI.
+                    utente venditore = new utente();
+                    venditore.setMatricola(rs.getString("venditore_matricola"));
+                    venditore.setMail(rs.getString("venditore_mail"));
+                    an.setVenditore(venditore);
+                    an.setImmaginePath(rs.getString("img_path"));
+                    return an;
+                }
+            }
+        }
+        return null;
+    }
+
+    // Inserisce un nuovo annuncio e restituisce l'id generato.
     public int insertAnnuncioReturningId(
             String titolo,
             String descrizione,
@@ -322,11 +400,13 @@ public class annuncioDAO {
         return categoriaAnnuncio.valueOf(val.toLowerCase());
     }
 
+    // Converte la stringa DB in enum tipoAnnuncio.
     private tipoAnnuncio parseTipo(String val) {
         if (val == null || val.isBlank()) return null;
         return tipoAnnuncio.valueOf(val.toLowerCase());
     }
 
+    // Converte la stringa DB in enum statoAnnuncio.
     private statoAnnuncio parseStato(String val) {
         if (val == null || val.isBlank()) return null;
         return statoAnnuncio.valueOf(val.toLowerCase());

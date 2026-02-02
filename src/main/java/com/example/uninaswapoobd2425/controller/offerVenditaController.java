@@ -21,18 +21,21 @@ public class offerVenditaController implements offerPaneController {
     private annuncio ann;
 
     @Override
+    // Inizializza il pannello vendita con prezzo richiesto.
     public void init(annuncio a) {
         this.ann = a;
         lblRichiesto.setText("€ " + a.getPrezzo().toString());
     }
 
     @FXML
+    // Imposta l'offerta al prezzo richiesto e invia.
     private void handleAccetta() {
         txtOfferta.setText(ann.getPrezzo().toString());
         handleInvia();
     }
 
     @FXML
+    // Valida e invia una offerta di vendita.
     private void handleInvia() {
         String raw = txtOfferta.getText() == null ? "" : txtOfferta.getText().trim();
         if (raw.isEmpty()) {
@@ -71,6 +74,7 @@ public class offerVenditaController implements offerPaneController {
         }
     }
 
+    // Inserisce l'offerta vendita nel DB e restituisce l'id.
     private int insertOfferta(Connection conn, String matricola, BigDecimal importo, String messaggio) throws Exception {
         String sql = """
             INSERT INTO offerta (id_annuncio, matricola_offerente, stato, importo_proposto, messaggio, data_offerta)
@@ -93,6 +97,7 @@ public class offerVenditaController implements offerPaneController {
         throw new Exception("Impossibile ottenere id_offerta (RETURNING vuoto)");
     }
 
+    // Verifica se esiste gia' un'offerta attiva per questo annuncio.
     private boolean hasActiveOffer(Connection conn, String matricola) throws Exception {
         String sql = """
             SELECT 1
@@ -109,6 +114,7 @@ public class offerVenditaController implements offerPaneController {
         }
     }
 
+    // Impedisce offerte verso il proprio annuncio.
     private boolean isSelfOffer(Connection conn, String matricola) throws Exception {
         String sql = "SELECT matricola_venditore FROM annuncio WHERE id_annuncio = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

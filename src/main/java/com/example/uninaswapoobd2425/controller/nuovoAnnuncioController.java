@@ -40,8 +40,11 @@ public class nuovoAnnuncioController {
     @FXML private ToggleButton btnScambio;
     @FXML private ToggleButton btnRegalo;
     @FXML private Label euroLabel;
+    // Seleziona tipo vendita.
     @FXML private void onTipoVendita() { setTipo("vendita"); }
+    // Seleziona tipo scambio.
     @FXML private void onTipoScambio() { setTipo("scambio"); }
+    // Seleziona tipo regalo.
     @FXML private void onTipoRegalo()  { setTipo("regalo"); }
 
     private final ToggleGroup tipoGroup = new ToggleGroup();
@@ -53,6 +56,7 @@ public class nuovoAnnuncioController {
     private final List<File> selectedImages = new ArrayList<>();
 
     @FXML
+    // Inizializza toggle tipo, combo categoria e contatore immagini.
     private void initialize() {
         updateCounter();
 
@@ -98,6 +102,7 @@ public class nuovoAnnuncioController {
 
     private class CategoriaCell extends ListCell<categoriaAnnuncio> {
         @Override
+        // Renderizza una voce categoria con icona e testo.
         protected void updateItem(categoriaAnnuncio item, boolean empty) {
             super.updateItem(item, empty);
 
@@ -133,6 +138,7 @@ public class nuovoAnnuncioController {
     }
     // Per i bottoni vendita,scambio,regalo
 
+    // Imposta il tipo annuncio e abilita/disabilita il prezzo.
     private void setTipo(String newTipo) {
         this.tipo = newTipo;
 
@@ -145,6 +151,7 @@ public class nuovoAnnuncioController {
         }
     }
 
+    // Crea un'icona grafica da resource.
     private javafx.scene.Node icon(String path) {
         var is = getClass().getResourceAsStream(path);
         if (is == null) return null;
@@ -157,6 +164,7 @@ public class nuovoAnnuncioController {
     }
 
     @FXML
+    // Apre il file chooser e carica le immagini selezionate.
     private void onCaricaImmagini() {
         if (selectedImages.size() >= MAX_IMG) {
             showWarn("Limite raggiunto", "Puoi caricare al massimo " + MAX_IMG + " immagini.");
@@ -186,6 +194,7 @@ public class nuovoAnnuncioController {
         updateCounter();
     }
 
+    // Aggiunge una miniatura e la collega alla lista selezionata.
     private void addImage(File file) {
         Image img = new Image(file.toURI().toString(), THUMB_SIZE, THUMB_SIZE, true, true);
 
@@ -234,20 +243,24 @@ public class nuovoAnnuncioController {
         tilePreview.getChildren().add(thumb);
     }
 
+    // Rimuove una immagine selezionata e la miniatura.
     private void removeImage(File file, StackPane thumbNode) {
         selectedImages.removeIf(f -> f.getAbsolutePath().equals(file.getAbsolutePath()));
         tilePreview.getChildren().remove(thumbNode);
         updateCounter();
     }
 
+    // Aggiorna il contatore immagini.
     private void updateCounter() {
         lblCounter.setText(selectedImages.size() + "/" + MAX_IMG);
     }
 
+    // Ritorna una copia immutabile delle immagini selezionate.
     public List<File> getSelectedImages() {
         return List.copyOf(selectedImages);
     }
 
+    // Mostra un alert di warning.
     private void showWarn(String title, String msg) {
         Alert a = new Alert(Alert.AlertType.WARNING);
         a.setTitle(title);
@@ -256,6 +269,7 @@ public class nuovoAnnuncioController {
         a.showAndWait();
     }
     @FXML
+    // Chiude la modale annulla.
     void handleAnnulla(ActionEvent event) {
         // Trucco per nascondere il genitore (l'overlay) senza complicati passaggi di dati
         var overlay = annullaButton.getScene().lookup("#modalOverlay");
@@ -272,6 +286,7 @@ public class nuovoAnnuncioController {
         // ((StackPane) annullaButton.getParent().getParent()).setVisible(false);
     }
     @FXML
+    // Valida input, inserisce annuncio e salva immagini.
     private void handlePubblicaAnnuncio(ActionEvent event) {
 
         String titolo = safe(titoloField.getText());
@@ -349,6 +364,7 @@ public class nuovoAnnuncioController {
         }
     }
 
+    // Converte il testo del prezzo in BigDecimal validato.
     private BigDecimal parsePrezzoBigDecimalOrNull(String s) {
         if (s == null) return null;
         String t = s.trim();
@@ -378,8 +394,10 @@ public class nuovoAnnuncioController {
         }
     }
 
+    // Normalizza una stringa null-safe.
     private String safe(String s) { return s == null ? "" : s.trim(); }
 
+    // Recupera la matricola dell'utente loggato dalla sessione.
     private String getMatricolaUtenteLoggato() {
         return com.example.uninaswapoobd2425.model.Session.getMatricola();
     }

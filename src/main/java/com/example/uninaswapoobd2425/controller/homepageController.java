@@ -82,6 +82,7 @@ public class homepageController {
     private VBox menuContent;
 
     @FXML
+    // Inizializza UI, filtri e carica la lista annunci.
     public void initialize() {
 
         Image img = new Image(
@@ -142,6 +143,7 @@ public class homepageController {
         mainBorderPane.disableProperty().bind(modalOverlay.visibleProperty());
     }
     @FXML
+    // Apre la modale per creare un nuovo annuncio.
     void handleNuovoAnnuncio(ActionEvent event) {
         try {
 
@@ -181,11 +183,13 @@ public class homepageController {
         }
     }
 
+    // Chiude la modale corrente.
     public void chiudiPopup() {
         modalOverlay.setVisible(false);
         modalOverlay.getChildren().clear();
     }
 
+    // Espande/chiude i filtri di categoria.
     private void toggleFilters() {
         expanded = !expanded;
 
@@ -198,11 +202,13 @@ public class homepageController {
         btnExpand.setText(expanded ? "‹" : "›");
     }
 
+    // Utility per gestire visibilita' e managed.
     private void setVisibleManaged(Control c, boolean v) {
         c.setVisible(v);
         c.setManaged(v);
     }
 
+    // Applica filtro per categoria secondo lo stato corrente.
     private void filtraPerCategoria(categoriaAnnuncio cat) {
         categoriaSelezionata = cat;
         if (offerteAttivo) {
@@ -218,6 +224,7 @@ public class homepageController {
         }
     }
 
+    // Renderizza una lista di annunci gia' pronta.
     public void loadAnnunci(List<annuncio> annunci) {
         tileAnnunci.getChildren().clear();
 
@@ -248,6 +255,7 @@ public class homepageController {
     }
 
 
+    // Carica annunci dal DB in base a tipo/categoria.
     private void caricaAnnunci(tipoAnnuncio tipo, categoriaAnnuncio categoria) {
         tileAnnunci.getChildren().clear();
 
@@ -282,6 +290,7 @@ public class homepageController {
         }
     }
 
+    // Carica preferiti dell'utente (con filtro categoria).
     private void caricaPreferiti(categoriaAnnuncio categoria) {
         tileAnnunci.getChildren().clear();
 
@@ -319,6 +328,7 @@ public class homepageController {
     }
 
     @FXML
+    // Filtro rapido: vendita.
     private void handleFilterVendita(MouseEvent event) {
         setOfferte(false);
         setRecensioni(false);
@@ -329,6 +339,7 @@ public class homepageController {
     }
 
     @FXML
+    // Filtro rapido: scambio.
     private void handleFilterScambio(MouseEvent event) {
         setOfferte(false);
         setRecensioni(false);
@@ -339,6 +350,7 @@ public class homepageController {
     }
 
     @FXML
+    // Filtro rapido: regalo.
     private void handleFilterRegalo(MouseEvent event) {
         setOfferte(false);
         setRecensioni(false);
@@ -349,6 +361,7 @@ public class homepageController {
     }
 
     @FXML
+    // Mostra i preferiti.
     private void handleFilterPreferiti(MouseEvent event) {
         setOfferte(false);
         setRecensioni(false);
@@ -358,6 +371,7 @@ public class homepageController {
     }
 
     @FXML
+    // Mostra le offerte.
     private void handleFilterOfferte(MouseEvent event) {
         setPreferiti(false);
         setRecensioni(false);
@@ -367,6 +381,7 @@ public class homepageController {
     }
 
     @FXML
+    // Mostra le recensioni.
     private void handleFilterRecensioni(MouseEvent event) {
         setPreferiti(false);
         setOfferte(false);
@@ -376,6 +391,7 @@ public class homepageController {
     }
 
     @FXML
+    // Mostra le statistiche.
     private void handleFilterStatistiche(MouseEvent event) {
         setPreferiti(false);
         setOfferte(false);
@@ -384,6 +400,7 @@ public class homepageController {
         caricaStatistiche();
     }
 
+    // Imposta il tipo selezionato e aggiorna menu.
     private void setTipoSelezionato(tipoAnnuncio tipo) {
         tipoSelezionato = tipo;
         setMenuActive(menuVendita, tipo == tipoAnnuncio.vendita);
@@ -391,6 +408,7 @@ public class homepageController {
         setMenuActive(menuRegalo, tipo == tipoAnnuncio.regalo);
     }
 
+    // Applica classe CSS attiva a un menu.
     private void setMenuActive(HBox box, boolean active) {
         if (box == null) return;
         String base = "menu-btn";
@@ -401,6 +419,7 @@ public class homepageController {
         }
     }
 
+    // Attiva/disattiva modalita preferiti.
     private void setPreferiti(boolean attivo) {
         preferitiAttivo = attivo;
         setMenuActive(menuPreferiti, attivo);
@@ -411,6 +430,7 @@ public class homepageController {
         }
     }
 
+    // Attiva/disattiva modalita offerte e gestisce contenuto.
     private void setOfferte(boolean attivo) {
         offerteAttivo = attivo;
         setMenuActive(menuOfferte, attivo);
@@ -429,6 +449,7 @@ public class homepageController {
         }
     }
 
+    // Attiva/disattiva modalita recensioni e gestisce contenuto.
     private void setRecensioni(boolean attivo) {
         recensioniAttivo = attivo;
         setMenuActive(menuRecensioni, attivo);
@@ -447,6 +468,7 @@ public class homepageController {
         }
     }
 
+    // Attiva/disattiva modalita statistiche e gestisce contenuto.
     private void setStatistiche(boolean attivo) {
         statisticheAttivo = attivo;
         setMenuActive(menuStatistiche, attivo);
@@ -465,6 +487,7 @@ public class homepageController {
         }
     }
 
+    // Carica view offerte e la inserisce nello scroll.
     private void caricaOfferte() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
@@ -479,6 +502,7 @@ public class homepageController {
         }
     }
 
+    // Carica view recensioni e la inserisce nello scroll.
     private void caricaRecensioni() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
@@ -493,6 +517,7 @@ public class homepageController {
         }
     }
 
+    // Carica view statistiche e la inserisce nello scroll.
     private void caricaStatistiche() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
@@ -507,6 +532,7 @@ public class homepageController {
         }
     }
 
+    // Apre la modale con il dettaglio annuncio.
     private void openDettaglio(annuncio a) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
@@ -541,6 +567,7 @@ public class homepageController {
         }
     }
 
+    // Chiude la modale di dettaglio.
     private void closeModal() {
         modalOverlay.getChildren().clear();
         modalOverlay.setVisible(false);
@@ -549,6 +576,7 @@ public class homepageController {
     }
 
     @FXML
+    // Apre o chiude il menu profilo con animazione.
     private void openProfileMenu(MouseEvent event) {
         event.consume();
 
@@ -568,6 +596,7 @@ public class homepageController {
         showProfileMenu(popupX, popupY);
     }
 
+    // Prepara il popup del menu profilo.
     private void configureProfileMenu() {
         menuContent = buildMenuContent();
         menuContent.getStylesheets().add(
@@ -581,6 +610,7 @@ public class homepageController {
         profilePopup.getContent().add(menuContent);
     }
 
+    // Costruisce il contenuto del menu profilo.
     private VBox buildMenuContent() {
         VBox box = new VBox();
         box.setSpacing(0);
@@ -598,6 +628,7 @@ public class homepageController {
         return box;
     }
 
+    // Esegue il logout e ritorna alla schermata login.
     private void handleLogout() {
         try {
             Session.clear();
@@ -616,6 +647,7 @@ public class homepageController {
         }
     }
 
+    // Crea un bottone del menu profilo con icona e callback.
     private Button buildMenuButton(String iconText, String title, String subtitle, Node trailingNode, Runnable action) {
         Button button = new Button();
         button.getStyleClass().setAll("profile-menu-item");
@@ -658,24 +690,28 @@ public class homepageController {
         return button;
     }
 
+    // Crea un separatore di menu (se necessario).
     private Separator createDivider() {
         Separator separator = new Separator();
         separator.getStyleClass().add("profile-menu-divider");
         return separator;
     }
 
+    // Crea il puntino di stato nel menu profilo.
     private Label createStatusDot() {
         Label dot = new Label();
         dot.getStyleClass().add("profile-menu-status-dot");
         return dot;
     }
 
+    // Crea un tag di scorciatoia (non usato al momento).
     private Label createShortcutTag(String text) {
         Label shortcut = new Label(text);
         shortcut.getStyleClass().add("profile-menu-shortcut");
         return shortcut;
     }
 
+    // Mostra il menu profilo con animazione.
     private void showProfileMenu(double screenX, double screenY) {
         menuContent.setOpacity(0);
         menuContent.setScaleX(0.92);
@@ -696,6 +732,7 @@ public class homepageController {
         new ParallelTransition(fadeIn, scaleIn).play();
     }
 
+    // Nasconde il menu profilo con animazione.
     private void hideProfileMenuWithAnimation() {
         FadeTransition fadeOut = new FadeTransition(Duration.millis(140), menuContent);
         fadeOut.setFromValue(1);
@@ -713,11 +750,13 @@ public class homepageController {
     }
 
     @FXML
+    // Chiude l'applicazione.
     void handleClose(ActionEvent event) {
         javafx.application.Platform.exit();
     }
 
     @FXML
+    // Minimizza la finestra con animazione.
     void handleMinimize(ActionEvent event) {
         Node source = (Node) event.getSource();
         Stage stage = (Stage) source.getScene().getWindow();

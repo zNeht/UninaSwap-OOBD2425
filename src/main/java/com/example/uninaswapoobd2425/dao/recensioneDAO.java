@@ -4,19 +4,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-/**
- * Gestione recensioni su offerte concluse.
- */
+
+ //Gestione recensioni su offerte concluse.
+
 public class recensioneDAO {
     private final Connection conn;
 
+    // Crea il DAO con una connessione gia' aperta.
     public recensioneDAO(Connection conn) {
         this.conn = conn;
     }
 
-    /**
-     * Rimuove eventuali recensioni duplicate per la stessa offerta/recensore (consente di aggiornare).
-     */
+
+    // Elimina la recensione esistente (se presente) per consentire il reinvio.
     public void deleteByOffertaAndRecensore(int idOfferta, String matricolaRecensore) throws Exception {
         ensureTable();
         Integer idTrans = findTransazioneId(idOfferta);
@@ -31,10 +31,8 @@ public class recensioneDAO {
         }
     }
 
-    /**
-     * Inserisce una recensione collegata a un'offerta accettata.
-     * Ritorna l'id generato.
-     */
+
+    // Inserisce la recensione (creando prima la tabella se manca).
     public int inserisci(int idOfferta, String matricolaRecensore, String matricolaRecensito, int voto, String commento) throws Exception {
         ensureTable();
         Integer idTrans = findTransazioneId(idOfferta);
@@ -65,9 +63,8 @@ public class recensioneDAO {
         throw new Exception("Impossibile inserire recensione");
     }
 
-    /**
-     * Crea la tabella recensioni se non esiste (id_recensione serial, FK su transazione e utente, unique per transazione+recensore).
-     */
+
+    // Garantisce l'esistenza della tabella recensioni.
     private void ensureTable() throws Exception {
         String sql = """
             CREATE TABLE IF NOT EXISTS recensioni (
@@ -86,9 +83,8 @@ public class recensioneDAO {
         }
     }
 
-    /**
-     * Verifica se esiste già una recensione per l'offerta e recensore indicati.
-     */
+
+    // Verifica presenza di una recensione per offerta+recensore.
     public boolean existsByOffertaAndRecensore(int idOfferta, String matricolaRecensore) throws Exception {
         Integer idTrans = findTransazioneId(idOfferta);
         if (idTrans == null) return false;
@@ -102,6 +98,7 @@ public class recensioneDAO {
         }
     }
 
+    // Ricava l'id della transazione associata all'offerta.
     private Integer findTransazioneId(int idOfferta) throws Exception {
         String sql = "SELECT id_transazione FROM transazione WHERE id_offerta = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

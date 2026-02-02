@@ -1,0 +1,20 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+actor Utente
+participant "loginController" as Login
+participant "DB" as DB
+participant "Session" as Session
+
+Utente -> Login: inserisce matricola/password\nclick "Login"
+Login -> DB: getConnection()
+DB --> Login: Connection
+Login -> DB: SELECT matricola, password\nWHERE matricola = ?
+DB --> Login: ResultSet (matricola, passwordHash)
+alt credenziali valide
+  Login -> Session: setMatricola(matricola)
+  Login -> Login: openHomepage()
+else credenziali non valide
+  Login -> Utente: Alert "Credenziali non valide"
+end
+@enduml

@@ -1,0 +1,169 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+left to right direction
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam defaultFontSize 12
+hide circle
+
+package "App" as APP {
+  class Launcher {
+    +main(args)
+  }
+  class MainApp {
+    +start(stage)
+  }
+}
+
+package "Auth/Session" as AUTH {
+  class Session {
+    -matricola
+    +getMatricola()
+    +setMatricola(matricola)
+    +clear()
+  }
+  class loginController {
+    +initialize()
+    +handleLogin()
+    +onRegisterLinkClick()
+  }
+  class registerController {
+    +handleRegister()
+    +onLoginLinkClick()
+  }
+}
+
+package "UI Controllers" as UI {
+  class homepageController {
+    +caricaAnnunci(...)
+    +caricaPreferiti(...)
+    +openDettaglio(annuncio)
+  }
+  class annuncioCardController {
+    +setData(annuncio, wishlisted, count, removeOnUnfavorite)
+  }
+  class dettaglioAnnuncioController {
+    +setAnnuncio(annuncio)
+    +loadOfferPane(...)
+  }
+  class nuovoAnnuncioController {
+    +handlePubblicaAnnuncio()
+    +handleAnnulla()
+  }
+  class offerteController
+  class offertaCardController
+  class offerPaneController
+  class recensioniController
+  class recensioneCardController
+  class statisticheController {
+    +loadData()
+    +renderPie(...)
+  }
+}
+
+package "DAO" as DAO {
+  class DB {
+    +getConnection()
+  }
+  class annuncioDAO {
+    +getAnnunciAttiviConImgPrincipale(...)
+    +insertAnnuncioReturningId(...)
+  }
+  class immagineAnnuncioDAO {
+    +insertImages(...)
+    +getImagesByAnnuncio(id)
+  }
+  class offertaDAO {
+    +getOfferteRicevute(matricolaVenditore)
+    +getOfferteInviate(matricolaOfferente)
+    +aggiornaMessaggio(idOfferta, msg)
+    +aggiornaStato(idOfferta, stato)
+  }
+  class wishlistDAO {
+    +add(idAnnuncio, idUtente)
+    +remove(idAnnuncio, idUtente)
+    +exists(idAnnuncio, idUtente)
+  }
+  class recensioniDAO {
+    +getRicevute(matricola)
+    +getInviate(matricola)
+  }
+  class oggettoScambioDAO
+  class statisticheDAO {
+    +getStatistiche(matricola)
+  }
+}
+
+package "Model" as MODEL {
+  class annuncio
+  class offerta
+  class recensione
+  class oggettoScambio
+  class transazione
+  class utente
+  class immagineAnnuncio
+  class wishlist
+}
+
+package "Util" as UTIL {
+  class ImageHandler {
+    +saveImages(idAnnuncio, files)
+    +resolveToAbsolute(dbPath)
+  }
+  class ScambioImageHandler {
+    +saveImage(idOfferta, sourcePath, ordine)
+  }
+}
+
+APP -[hidden]- AUTH
+AUTH -[hidden]- UI
+UI -[hidden]- DAO
+DAO -[hidden]- MODEL
+MODEL -[hidden]- UTIL
+
+Launcher --> MainApp
+MainApp --> loginController
+
+loginController --> Session
+registerController --> Session
+loginController --> DB
+registerController --> DB
+
+homepageController --> annuncioDAO
+homepageController --> wishlistDAO
+homepageController --> Session
+homepageController --> dettaglioAnnuncioController
+
+annuncioCardController --> annuncio
+annuncioCardController --> ImageHandler
+
+dettaglioAnnuncioController --> annuncio
+dettaglioAnnuncioController --> immagineAnnuncioDAO
+dettaglioAnnuncioController --> offerPaneController
+
+nuovoAnnuncioController --> annuncioDAO
+nuovoAnnuncioController --> immagineAnnuncioDAO
+nuovoAnnuncioController --> ImageHandler
+nuovoAnnuncioController --> Session
+
+offerteController --> offertaDAO
+offertaCardController --> offerta
+offerPaneController --> offertaDAO
+offerPaneController --> ScambioImageHandler
+
+recensioniController --> recensioniDAO
+recensioneCardController --> recensione
+
+statisticheController --> statisticheDAO
+
+annuncioDAO --> DB
+immagineAnnuncioDAO --> DB
+offertaDAO --> DB
+wishlistDAO --> DB
+recensioniDAO --> DB
+oggettoScambioDAO --> DB
+statisticheDAO --> DB
+@enduml

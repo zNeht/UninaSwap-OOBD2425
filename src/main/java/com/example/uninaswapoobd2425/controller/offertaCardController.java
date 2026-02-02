@@ -1,6 +1,7 @@
 package com.example.uninaswapoobd2425.controller;
 
-import com.example.uninaswapoobd2425.dao.offertaDAO;
+import com.example.uninaswapoobd2425.model.annuncio;
+import com.example.uninaswapoobd2425.model.offerta;
 import com.example.uninaswapoobd2425.model.statoOfferta;
 import com.example.uninaswapoobd2425.model.tipoAnnuncio;
 import javafx.fxml.FXML;
@@ -11,15 +12,19 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.ButtonBase;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.Node;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.scene.text.Text;
 
 import java.io.File;
 import java.net.URL;
@@ -28,6 +33,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class offertaCardController {
+    @FXML private VBox root;
     @FXML private Label lblStato;
     @FXML private Label lblTitolo;
     @FXML private Label lblImporto;
@@ -38,6 +44,7 @@ public class offertaCardController {
     @FXML private HBox actionBar;
     @FXML private Button btnOggetti;
     @FXML private Button btnMessaggio;
+    @FXML private Button btnEditMessaggio;
     @FXML private Button btnModifica;
     @FXML private Button btnRitira;
     @FXML private Button btnRecensisci;
@@ -46,29 +53,39 @@ public class offertaCardController {
     private Runnable onRitira = () -> {};
     private Runnable onViewItems = () -> {};
     private Runnable onViewMessage = () -> {};
+    private Runnable onEditMessage = () -> {};
     private Consumer<RecensioneInput> onRecensisci = r -> {};
+    private Runnable onOpenDetails = () -> {};
 
     @FXML
+    // Inizializza visibilita' pulsanti e click sulla card.
     private void initialize() {
         showReviewButton(false);
         showModifyWithdraw(true);
         showItemsButton(false);
         showMessageButton(false);
+        showEditMessageButton(false);
+        if (root != null) {
+            root.addEventFilter(MouseEvent.MOUSE_CLICKED, this::handleCardClick);
+        }
     }
 
-    public void setData(offertaDAO.OfferView v) {
-        lblTitolo.setText(v.titoloAnnuncio);
-        lblStato.setText(labelStato(v.stato));
+    // Popola la card con i dati dell'offerta.
+    public void setData(offerta v) {
+        annuncio a = v != null ? v.getAnnuncio() : null;
+        lblTitolo.setText(a != null && a.getTitolo() != null ? a.getTitolo() : "-");
+        lblStato.setText(labelStato(v.getStato()));
 
-        if (v.importo != null) {
-            lblImporto.setText("€ " + v.importo);
+        if (v.getImportoProposto() != null) {
+            lblImporto.setText("€ " + v.getImportoProposto());
         } else {
-            lblImporto.setText(v.tipo == tipoAnnuncio.scambio ? "Scambio" : "Gratis");
+            tipoAnnuncio tipo = a != null ? a.getTipo() : null;
+            lblImporto.setText(tipo == tipoAnnuncio.scambio ? "Scambio" : "Gratis");
         }
 
-        if (v.prezzoRichiesto != null) {
-            lblPrezzoRichiesto.setText("€ " + v.prezzoRichiesto);
-            if (v.importo != null && v.importo.compareTo(v.prezzoRichiesto) < 0) {
+        if (a != null && a.getPrezzo() != null) {
+            lblPrezzoRichiesto.setText("€ " + a.getPrezzo());
+            if (v.getImportoProposto() != null && v.getImportoProposto().compareTo(a.getPrezzo()) < 0) {
                 lblPrezzoRichiesto.getStyleClass().add("strike");
             } else {
                 lblPrezzoRichiesto.getStyleClass().remove("strike");
@@ -78,19 +95,20 @@ public class offertaCardController {
         }
 
         if (lblVenditore != null) {
-            lblVenditore.setText(v.matricolaVenditore != null && !v.matricolaVenditore.isBlank()
-                    ? v.matricolaVenditore
+            String venditore = a != null && a.getVenditore() != null ? a.getVenditore().getMatricola() : null;
+            lblVenditore.setText(venditore != null && !venditore.isBlank()
+                    ? venditore
                     : "-");
         }
 
-        if (v.dataOfferta != null) {
-            lblData.setText(v.dataOfferta.toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        if (v.getDataOfferta() != null) {
+            lblData.setText(v.getDataOfferta().toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         } else {
             lblData.setText("-");
         }
 
-        if (v.imgPath != null && !v.imgPath.isBlank()) {
-            File f = new File(System.getProperty("user.dir"), v.imgPath);
+        if (a != null && a.getImmaginePath() != null && !a.getImmaginePath().isBlank()) {
+            File f = new File(System.getProperty("user.dir"), a.getImmaginePath());
             if (f.exists()) {
                 imgAnnuncio.setImage(new Image(f.toURI().toString(), true));
             }
@@ -100,36 +118,42 @@ public class offertaCardController {
             ));
         }
 
-        setStatusStyle(v.stato);
+        setStatusStyle(v.getStato());
     }
 
+    // Mostra o nasconde la barra azioni.
     public void setActionsVisible(boolean visible) {
         actionBar.setManaged(visible);
         actionBar.setVisible(visible);
     }
 
+    // Cambia testo del bottone modifica.
     public void setModificaLabel(String text) {
         if (text != null && !text.isBlank()) {
             btnModifica.setText(text);
         }
     }
 
+    // Cambia testo del bottone ritira.
     public void setRitiraLabel(String text) {
         if (text != null && !text.isBlank()) {
             btnRitira.setText(text);
         }
     }
 
+    // Abilita/disabilita i pulsanti in base ai permessi.
     public void setActionStates(boolean canModify, boolean canWithdraw) {
         btnModifica.setDisable(!canModify);
         btnRitira.setDisable(!canWithdraw);
     }
 
+    // Mostra/nasconde il bottone recensione.
     public void showReviewButton(boolean show) {
         btnRecensisci.setVisible(show);
         btnRecensisci.setManaged(show);
     }
 
+    // Mostra/nasconde i bottoni modifica/ritira.
     public void showModifyWithdraw(boolean show) {
         btnModifica.setVisible(show);
         btnModifica.setManaged(show);
@@ -137,6 +161,7 @@ public class offertaCardController {
         btnRitira.setManaged(show);
     }
 
+    // Mostra/nasconde il bottone oggetti.
     public void showItemsButton(boolean show) {
         if (btnOggetti != null) {
             btnOggetti.setVisible(show);
@@ -144,6 +169,7 @@ public class offertaCardController {
         }
     }
 
+    // Mostra/nasconde il bottone messaggio.
     public void showMessageButton(boolean show) {
         if (btnMessaggio != null) {
             btnMessaggio.setVisible(show);
@@ -151,50 +177,119 @@ public class offertaCardController {
         }
     }
 
+    // Mostra/nasconde il bottone modifica messaggio.
+    public void showEditMessageButton(boolean show) {
+        if (btnEditMessaggio != null) {
+            btnEditMessaggio.setVisible(show);
+            btnEditMessaggio.setManaged(show);
+        }
+    }
+
+    // Aggiorna il testo del bottone messaggio (aggiungi/modifica).
+    public void setEditMessageLabel(String text) {
+        if (btnEditMessaggio != null && text != null && !text.isBlank()) {
+            btnEditMessaggio.setText(text);
+        }
+    }
+
+    // Imposta handler per modifica e ritira.
     public void setHandlers(Runnable onModifica, Runnable onRitira) {
         this.onModifica = onModifica != null ? onModifica : () -> {};
         this.onRitira = onRitira != null ? onRitira : () -> {};
     }
 
+    // Imposta handler per invio recensione.
     public void setOnRecensisci(Consumer<RecensioneInput> handler) {
         this.onRecensisci = handler != null ? handler : r -> {};
     }
 
+    // Imposta handler per visualizzare oggetti scambio.
     public void setOnViewItems(Runnable handler) {
         this.onViewItems = handler != null ? handler : () -> {};
     }
 
+    // Imposta handler per visualizzare messaggio.
     public void setOnViewMessage(Runnable handler) {
         this.onViewMessage = handler != null ? handler : () -> {};
     }
 
+    // Imposta handler per aggiungere/modificare messaggio.
+    public void setOnEditMessage(Runnable handler) {
+        this.onEditMessage = handler != null ? handler : () -> {};
+    }
+
+    // Imposta handler per apertura dettaglio.
+    public void setOnOpenDetails(Runnable handler) {
+        this.onOpenDetails = handler != null ? handler : () -> {};
+    }
+
+    // Gestisce click sulla card evitando i controlli interni.
+    private void handleCardClick(MouseEvent event) {
+        if (event == null) return;
+        Node target = event.getTarget() instanceof Node ? (Node) event.getTarget() : null;
+        if (target == null) return;
+        if (isInsideButton(target)) return;
+        if (isInsideLabelOrText(target)) return;
+        onOpenDetails.run();
+    }
+
+    // Verifica se il click e' avvenuto dentro un bottone.
+    private boolean isInsideButton(Node node) {
+        while (node != null) {
+            if (node instanceof ButtonBase) return true;
+            node = node.getParent();
+        }
+        return false;
+    }
+
+    // Verifica se il click e' avvenuto su testo/label.
+    private boolean isInsideLabelOrText(Node node) {
+        while (node != null) {
+            if (node instanceof Label || node instanceof Text) return true;
+            node = node.getParent();
+        }
+        return false;
+    }
+
     @FXML
+    // Handler UI per modifica.
     private void handleModifica() {
         onModifica.run();
     }
 
     @FXML
+    // Handler UI per ritira.
     private void handleRitira() {
         onRitira.run();
     }
 
     @FXML
+    // Handler UI per mostrare oggetti.
     private void handleViewItems() {
         onViewItems.run();
     }
 
     @FXML
+    // Handler UI per mostrare messaggio.
     private void handleViewMessage() {
         onViewMessage.run();
     }
 
     @FXML
+    // Handler UI per aggiungere/modificare messaggio.
+    private void handleEditMessage() {
+        onEditMessage.run();
+    }
+
+    @FXML
+    // Handler UI per apertura dialog recensione.
     private void handleRecensisci() {
         RecensioneInput input = openRecensioneDialog();
         if (input == null) return;
         onRecensisci.accept(input);
     }
 
+    // Dialog per inserimento recensione (stelle + commento).
     private RecensioneInput openRecensioneDialog() {
         Stage owner = (Stage) btnRecensisci.getScene().getWindow();
         Stage stage = new Stage(StageStyle.UNDECORATED);
@@ -290,6 +385,7 @@ public class offertaCardController {
         return null;
     }
 
+    // Aggiorna la UI delle stelle del rating.
     private void updateStars(Button[] stars, int filled) {
         for (int i = 0; i < stars.length; i++) {
             stars[i].setText(i < filled ? "★" : "☆");
@@ -302,6 +398,7 @@ public class offertaCardController {
         String commento;
     }
 
+    // Converte lo stato in label leggibile.
     private String labelStato(statoOfferta stato) {
         return switch (stato) {
             case in_attesa -> "In attesa";
@@ -311,6 +408,7 @@ public class offertaCardController {
         };
     }
 
+    // Applica stile CSS in base allo stato.
     private void setStatusStyle(statoOfferta stato) {
         lblStato.getStyleClass().removeAll("attesa", "accettata", "rifiutata", "ritirata");
         switch (stato) {

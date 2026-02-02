@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.StackPane?>
 
 <VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:id="root"
       fx:controller="com.example.uninaswapoobd2425.controller.offertaCardController"
       spacing="8" styleClass="card" prefWidth="280" maxWidth="280" minWidth="280" fillWidth="true">
     <padding>
@@ -46,6 +47,7 @@
     <VBox spacing="8">
         <Button fx:id="btnOggetti" text="Oggetti offerti" onAction="#handleViewItems" styleClass="btn-ghost"/>
         <Button fx:id="btnMessaggio" text="Vedi messaggio" onAction="#handleViewMessage" styleClass="btn-ghost"/>
+        <Button fx:id="btnEditMessaggio" text="Aggiungi messaggio" onAction="#handleEditMessage" styleClass="btn-ghost"/>
         <HBox fx:id="actionBar" spacing="8" alignment="CENTER_LEFT">
             <Button fx:id="btnModifica" text="Modifica offerta" onAction="#handleModifica" styleClass="btn-primary"/>
             <Button fx:id="btnRitira" text="Annulla offerta" onAction="#handleRitira" styleClass="btn-ghost"/>

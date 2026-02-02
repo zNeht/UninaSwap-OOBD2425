@@ -26,10 +26,12 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import org.mindrot.jbcrypt.BCrypt;
 
 
 public class loginController {
     @FXML
+    // Chiude l'applicazione.
     void handleClose(ActionEvent event) {
         javafx.application.Platform.exit();
     }
@@ -44,6 +46,7 @@ public class loginController {
     private double xOffset = 0;
     private double yOffset = 0;
 
+    // Inizializza drag finestra e tenta auto-login.
     public void initialize() {
         if (rootPane != null) {
             rootPane.setOnMousePressed(event -> {
@@ -60,6 +63,7 @@ public class loginController {
         autoLoginIfRemembered();
     }
     @FXML
+    // Minimizza la finestra con animazione.
     void handleMinimize(ActionEvent event) {
         Node source = (Node) event.getSource();
         Stage stage = (Stage) source.getScene().getWindow();
@@ -91,6 +95,7 @@ public class loginController {
     }
 
     @FXML
+    // Transizione verso la schermata di registrazione.
     protected void onRegisterLinkClick(ActionEvent event) {
 
         Node sourceNode = (Node) event.getSource();
@@ -130,6 +135,7 @@ public class loginController {
     }
 
     @FXML
+    // Esegue il login verificando le credenziali sul DB.
     void handleLogin(ActionEvent event) {
         String matricola = matricolaField.getText() != null ? matricolaField.getText().trim() : "";
         String password = passwordField.getText() != null ? passwordField.getText().trim() : "";
@@ -139,16 +145,18 @@ public class loginController {
             return;
         }
 
-        String sql = "SELECT matricola FROM utente WHERE matricola = ? AND password = ?";
+        String sql = "SELECT matricola, password FROM utente WHERE matricola = ?";
         try (Connection conn = DB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, matricola);
-            ps.setString(2, password);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    Session.setMatricola(rs.getString("matricola"));
-                    openHomepage(event);
-                    return;
+                    String hash = rs.getString("password");
+                    if (hash != null && BCrypt.checkpw(password, hash)) {
+                        Session.setMatricola(rs.getString("matricola"));
+                        openHomepage(event);
+                        return;
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -160,11 +168,13 @@ public class loginController {
         new Alert(Alert.AlertType.WARNING, "Credenziali non valide.").showAndWait();
     }
 
+    // Apre la homepage usando l'evento come origine.
     private void openHomepage(ActionEvent event) {
         Node sourceNode = (Node) event.getSource();
         openHomepage(sourceNode.getScene());
     }
 
+    // Apre la homepage con transizione dal scene corrente.
     private void openHomepage(Scene currentScene) {
         if (currentScene == null) return;
         Parent root = currentScene.getRoot();
@@ -198,6 +208,7 @@ public class loginController {
         fadeOut.play();
     }
 
+    // Se esiste una matricola in sessione, apre direttamente la homepage.
     private void autoLoginIfRemembered() {
         if (rootPane == null) return;
         Platform.runLater(() -> {
@@ -208,6 +219,7 @@ public class loginController {
         });
     }
 
+    // Abilita il drag della finestra dalla root.
     private void attachWindowDrag(Stage stage, Parent root) {
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
@@ -220,6 +232,7 @@ public class loginController {
         });
     }
 
+    // Centra lo stage sullo schermo principale.
     private void centerStageOnScreen(Stage stage) {
         javafx.geometry.Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
         stage.setX(bounds.getMinX() + (bounds.getWidth() - stage.getWidth()) / 2);

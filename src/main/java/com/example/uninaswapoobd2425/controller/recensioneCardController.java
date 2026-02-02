@@ -1,6 +1,6 @@
 package com.example.uninaswapoobd2425.controller;
 
-import com.example.uninaswapoobd2425.dao.recensioniDAO;
+import com.example.uninaswapoobd2425.model.recensione;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -12,26 +12,30 @@ public class recensioneCardController {
     @FXML private Label lblUtenteTitle;
     @FXML private Label lblData;
 
-    public void setData(recensioniDAO.RecensioneView v, boolean ricevuta) {
-        lblTitolo.setText(v.titoloAnnuncio != null ? v.titoloAnnuncio : "Annuncio");
+    // Popola la card con i dati della recensione.
+    public void setData(recensione v, boolean ricevuta) {
+        lblTitolo.setText(v.getTitoloAnnuncio() != null ? v.getTitoloAnnuncio() : "Annuncio");
 
-        if (v.commento != null && !v.commento.isBlank()) {
-            lblCommento.setText(v.commento.trim());
+        if (v.getCommento() != null && !v.getCommento().isBlank()) {
+            lblCommento.setText(v.getCommento().trim());
         } else {
             lblCommento.setText("(Nessun commento)");
         }
         // Se la card è lato venditore (ricevuta=true) mostra chi ha recensito, altrimenti mostra il venditore recensito
-        String utenteLabel = ricevuta ? (v.recensore != null ? v.recensore : "-") : (v.recensito != null ? v.recensito : "-");
+        String utenteLabel = ricevuta
+                ? (v.getMatricolaRecensore() != null ? v.getMatricolaRecensore() : "-")
+                : (v.getMatricolaRecensito() != null ? v.getMatricolaRecensito() : "-");
         lblUtente.setText(utenteLabel);
         lblUtenteTitle.setText(ricevuta ? "Recensitore" : "Venditore");
-        if (v.data != null) {
-            lblData.setText(v.data.toLocalDate().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        if (v.getDataRecensione() != null) {
+            lblData.setText(v.getDataRecensione().toLocalDate().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         } else {
             lblData.setText("-");
         }
-        paintStars(v.voto);
+        paintStars(v.getVoto());
     }
 
+    // Colora le stelle in base al voto.
     private void paintStars(int voto) {
         Label[] stars = {star1, star2, star3, star4, star5};
         for (int i = 0; i < stars.length; i++) {

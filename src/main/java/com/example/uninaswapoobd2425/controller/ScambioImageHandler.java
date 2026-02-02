@@ -13,10 +13,12 @@ public class ScambioImageHandler {
 
     private final Path baseDir;
 
+    // Inizializza la cartella base per le immagini degli scambi.
     public ScambioImageHandler() {
         this.baseDir = Paths.get(System.getProperty("user.dir"), "imgScambi");
     }
 
+    // Salva l'immagine su disco e ritorna il path relativo per il DB.
     public String saveImage(int idOfferta, String sourcePath, int ordine) throws IOException {
         Path offertaDir = baseDir.resolve(String.valueOf(idOfferta));
         Files.createDirectories(offertaDir);
@@ -31,6 +33,7 @@ public class ScambioImageHandler {
         return "imgScambi/" + idOfferta + "/" + filename;
     }
 
+    // Estrae l'estensione del file in minuscolo.
     private String getExt(String name) {
         int dot = name.lastIndexOf('.');
         if (dot < 0 || dot == name.length() - 1) return "";

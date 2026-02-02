@@ -77,7 +77,12 @@
             <Label fx:id="lblDescrizione" wrapText="true" styleClass="section-text"/>
         </VBox>
 
-        <VBox spacing="10" styleClass="section-box">
+        <VBox fx:id="offerDetailBox" spacing="6" styleClass="section-box" visible="false" managed="false">
+            <Label text="Dettaglio offerta inviata" styleClass="section-title"/>
+            <VBox fx:id="offerDetailContent" spacing="6"/>
+        </VBox>
+
+        <VBox fx:id="offerActionBox" spacing="10" styleClass="section-box">
             <Label text="Fai un’offerta" styleClass="section-title"/>
             <VBox fx:id="offerContainer" spacing="10"/>
         </VBox>

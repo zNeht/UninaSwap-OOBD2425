@@ -21,6 +21,7 @@ public class statisticheController {
     @FXML private Label lblAccettateRegalo;
     @FXML private Label lblAccettateVenditore;
 
+    // Carica statistiche dal DB e aggiorna i grafici.
     public void loadData() {
         String matricola = Session.getMatricola();
         if (matricola == null || matricola.isBlank()) {
@@ -41,6 +42,7 @@ public class statisticheController {
         }
     }
 
+    // Renderizza un grafico a torta con i valori per tipologia.
     private void renderPie(PieChart pie, int vendite, int scambi, int regali, String title) {
         pie.getData().clear();
         pie.setTitle(title);
@@ -55,6 +57,7 @@ public class statisticheController {
         if (regali > 0) pie.getData().add(new PieChart.Data("Regalo", regali));
     }
 
+    // Formatta il riepilogo delle offerte di vendita accettate.
     private String formatVenditaStats(statisticheDAO.Statistiche s) {
         if (s.mediaVendita == null && s.minVendita == null && s.maxVendita == null) {
             return "Nessuna offerta di vendita accettata con importo.";
@@ -66,6 +69,7 @@ public class statisticheController {
         return "Totale: " + count + "   Min: " + min + "   Max: " + max + "   Media: " + avg;
     }
 
+    // Aggiorna i contatori testuali per tipologia.
     private void renderCounts(statisticheDAO.Statistiche s) {
         if (lblInviateVendita != null) {
             lblInviateVendita.setText("Vendita: " + s.inviateVendita);
@@ -77,6 +81,7 @@ public class statisticheController {
         }
     }
 
+    // Aggiorna il riepilogo delle vendite accettate come venditore.
     private void renderVenditeAccettateDaVenditore(statisticheDAO.Statistiche s) {
         if (lblAccettateVenditore == null) return;
         if (s.accettateComeVenditoreVendita == 0) {
@@ -89,6 +94,7 @@ public class statisticheController {
         lblAccettateVenditore.setText("Totale: " + s.accettateComeVenditoreVendita + "   Min: " + min + "   Max: " + max + "   Media: " + avg);
     }
 
+    // Formatta un importo in euro con due decimali.
     private String fmtCurrency(java.math.BigDecimal v) {
         if (v == null) return "-";
         return "€ " + v.setScale(2, java.math.RoundingMode.HALF_UP);

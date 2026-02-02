@@ -1,0 +1,114 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+left to right direction
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam defaultFontSize 12
+hide circle
+
+package "Domain Model" {
+  class utente {
+    -matricola: String
+    -nome: String
+    -cognome: String
+    -mail: String
+    -password: String
+  }
+
+  class annuncio {
+    -idAnnuncio: int
+    -titolo: String
+    -descrizione: String
+    -prezzo: BigDecimal
+    -tipo: tipoAnnuncio
+    -categoria: categoriaAnnuncio
+    -stato: statoAnnuncio
+    -immaginePath: String
+  }
+
+  class offerta {
+    -idOfferta: int
+    -dataOfferta: LocalDateTime
+    -stato: statoOfferta
+    -importoProposto: BigDecimal
+    -messaggio: String
+  }
+
+  class oggettoScambio {
+    -idOggetto: int
+    -nomeOggetto: String
+    -path: String
+  }
+
+  class transazione {
+    -idTransazione: int
+    -idOfferta: int
+    -idAnnuncio: int
+    -dataConclusione: LocalDateTime
+  }
+
+  class recensione {
+    -idRecensione: int
+    -idTransazione: int
+    -idAnnuncio: int
+    -titoloAnnuncio: String
+    -matricolaRecensore: String
+    -matricolaRecensito: String
+    -voto: int
+    -commento: String
+    -dataRecensione: LocalDateTime
+  }
+
+  class immagineAnnuncio {
+    -idImmagine: int
+    -idAnnuncio: int
+    -path: String
+    -ordine: int
+    -isPrincipale: boolean
+    -uploadedAt: LocalDateTime
+  }
+
+  class wishlist {
+    -idWishlist: int
+    -idAnnuncio: int
+    -idUtente: String
+  }
+
+  enum tipoAnnuncio
+  enum categoriaAnnuncio
+  enum statoAnnuncio
+  enum statoOfferta
+}
+
+utente "1" -- "0..*" annuncio : pubblica
+annuncio "1" -- "0..*" offerta : riceve
+utente "1" -- "0..*" offerta : invia
+offerta "1" -- "0..*" oggettoScambio : include (scambio)
+
+annuncio "1" -- "0..*" immagineAnnuncio : immagini
+
+annuncio "1" -- "0..1" transazione : conclusione
+transazione "1" -- "1" offerta : offertaAccettata
+transazione "0..1" -- "1" recensione : recensione
+
+recensione "1" -- "1" utente : recensore
+recensione "1" -- "1" utente : recensito
+
+utente "1" -- "0..*" wishlist : preferisce
+annuncio "1" -- "0..*" wishlist : e' preferito
+
+offerta --> annuncio
+offerta --> utente : offerente
+annuncio --> utente : venditore
+oggettoScambio --> offerta
+recensione --> transazione
+transazione --> annuncio
+
+offerta --> statoOfferta
+annuncio --> tipoAnnuncio
+annuncio --> categoriaAnnuncio
+annuncio --> statoAnnuncio
+@enduml

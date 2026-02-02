@@ -23,6 +23,7 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class registerController {
     private double xOffset = 0;
@@ -57,6 +58,7 @@ public class registerController {
 
 
     @FXML
+    // Inizializza floating label e drag finestra.
     public void initialize() {
         setupFloatingLabel(nameField, nameLabel);
         setupFloatingLabel(surnameField, surnameLabel);
@@ -79,6 +81,7 @@ public class registerController {
         }
     }
 
+    // Gestisce l'animazione della label quando il campo e' focusato o compilato.
     private void setupFloatingLabel(TextField field, Label label) {
 
         TranslateTransition moveUp = new TranslateTransition(Duration.millis(200), label);
@@ -112,11 +115,13 @@ public class registerController {
     }
 
     @FXML
+    // Chiude l'applicazione.
     void handleClose(ActionEvent event) {
         javafx.application.Platform.exit();
     }
 
     @FXML
+    // Minimizza la finestra con animazione.
     void handleMinimize(ActionEvent event) {
         Node source = (Node) event.getSource();
         Stage stage = (Stage) source.getScene().getWindow();
@@ -148,6 +153,7 @@ public class registerController {
     }
 
     @FXML
+    // Ritorna alla schermata di login con transizione.
     protected void onLoginLinkClick(ActionEvent event) {
 
         Node sourceNode = (Node) event.getSource();
@@ -189,6 +195,7 @@ public class registerController {
     }
 
     @FXML
+    // Valida input e registra un nuovo utente sul DB.
     void handleRegister(ActionEvent event) {
         String nome = safeText(nameField);
         String cognome = safeText(surnameField);
@@ -199,6 +206,14 @@ public class registerController {
 
         if (nome.isEmpty() || cognome.isEmpty() || mail.isEmpty() || matricola.isEmpty() || password.isEmpty()) {
             new Alert(Alert.AlertType.WARNING, "Compila tutti i campi obbligatori.").showAndWait();
+            return;
+        }
+        if (matricola.length() != 9) {
+            new Alert(Alert.AlertType.WARNING, "La matricola deve essere lunga 9 caratteri.").showAndWait();
+            return;
+        }
+        if (!mail.toLowerCase().endsWith("@studenti.unina.it")) {
+            new Alert(Alert.AlertType.WARNING, "Email non valida: usa un indirizzo @studenti.unina.it.").showAndWait();
             return;
         }
         if (!password.equals(confirm)) {
@@ -222,7 +237,8 @@ public class registerController {
                 ps.setString(2, nome);
                 ps.setString(3, cognome);
                 ps.setString(4, mail);
-                ps.setString(5, password);
+                String hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
+                ps.setString(5, hash);
                 ps.executeUpdate();
             }
         } catch (Exception ex) {
@@ -235,10 +251,12 @@ public class registerController {
         onLoginLinkClick(event);
     }
 
+    // Legge il testo del campo e lo normalizza.
     private String safeText(TextField field) {
         return field.getText() == null ? "" : field.getText().trim();
     }
 
+    // Verifica l'esistenza di un valore univoco (matricola/mail).
     private boolean existsByColumn(Connection conn, String column, String value) throws Exception {
         String sql = "SELECT 1 FROM utente WHERE " + column + " = ? LIMIT 1";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

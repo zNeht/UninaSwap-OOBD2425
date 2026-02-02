@@ -1,9 +1,13 @@
 package com.example.uninaswapoobd2425.controller;
 
 import com.example.uninaswapoobd2425.dao.DB;
+import com.example.uninaswapoobd2425.dao.annuncioDAO;
 import com.example.uninaswapoobd2425.dao.offertaDAO;
 import com.example.uninaswapoobd2425.dao.oggettoScambioDAO;
 import com.example.uninaswapoobd2425.dao.recensioneDAO;
+import com.example.uninaswapoobd2425.model.annuncio;
+import com.example.uninaswapoobd2425.model.offerta;
+import com.example.uninaswapoobd2425.model.oggettoScambio;
 import com.example.uninaswapoobd2425.model.Session;
 import com.example.uninaswapoobd2425.model.statoAnnuncio;
 import com.example.uninaswapoobd2425.model.statoOfferta;
@@ -19,11 +23,15 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.Parent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -46,6 +54,7 @@ public class offerteController {
     @FXML private Button btnToggleInviateAttive;
     @FXML private Button btnToggleInviateRifiutate;
 
+    // Carica offerte ricevute/inviate per l'utente loggato.
     public void loadData() {
         String matricola = Session.getMatricola();
         if (matricola == null || matricola.isBlank()) {
@@ -54,8 +63,8 @@ public class offerteController {
 
         try (Connection conn = DB.getConnection()) {
             offertaDAO dao = new offertaDAO(conn);
-            List<offertaDAO.OfferView> ricevute = dao.getOfferteRicevute(matricola);
-            List<offertaDAO.OfferView> inviate = dao.getOfferteInviate(matricola);
+            List<offerta> ricevute = dao.getOfferteRicevute(matricola);
+            List<offerta> inviate = dao.getOfferteInviate(matricola);
 
             renderRicevute(ricevute);
             renderInviate(inviate);
@@ -64,12 +73,13 @@ public class offerteController {
         }
     }
 
-    private void renderRicevute(List<offertaDAO.OfferView> list) throws Exception {
+    // Renderizza le offerte ricevute nelle tre colonne (attesa/accettate/chiuse).
+    private void renderRicevute(List<offerta> list) throws Exception {
         tileRicevuteAttesa.getChildren().clear();
         tileRicevuteAccettate.getChildren().clear();
         tileRicevuteChiuse.getChildren().clear();
 
-        for (offertaDAO.OfferView v : list) {
+        for (offerta v : list) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/com/example/uninaswapoobd2425/offertaCard.fxml"
             ));
@@ -77,10 +87,14 @@ public class offerteController {
             offertaCardController c = loader.getController();
             c.setData(v);
             c.setActionsVisible(true);
+            c.setOnOpenDetails(() -> openDettaglio(v));
+            card.setCursor(javafx.scene.Cursor.HAND);
+            card.setPickOnBounds(true);
 
-            boolean inAttesa = v.stato == statoOfferta.in_attesa;
-            boolean annuncioBloccato = v.statoAnnuncio == statoAnnuncio.concluso
-                    || v.statoAnnuncio == statoAnnuncio.annullato;
+            annuncio a = v.getAnnuncio();
+            boolean inAttesa = v.getStato() == statoOfferta.in_attesa;
+            boolean annuncioBloccato = a != null && (a.getStato() == statoAnnuncio.concluso
+                    || a.getStato() == statoAnnuncio.annullato);
 
             // per ricevute: uso i bottoni come Accetta (modifica) / Rifiuta (annulla)
             c.setModificaLabel("Accetta");
@@ -90,15 +104,15 @@ public class offerteController {
                     () -> handleRifiuta(v)
             );
             c.setActionStates(inAttesa && !annuncioBloccato, inAttesa && !annuncioBloccato);
-            if (v.tipo == tipoAnnuncio.scambio) {
+            if (a != null && a.getTipo() == tipoAnnuncio.scambio) {
                 c.showItemsButton(true);
-                c.setOnViewItems(() -> openOggettiOfferti(v.idOfferta));
+                c.setOnViewItems(() -> openOggettiOfferti(v.getIdOfferta()));
             } else {
                 c.showItemsButton(false);
             }
             configureMessageButton(c, v);
 
-            if (v.stato == statoOfferta.accettata) {
+            if (v.getStato() == statoOfferta.accettata) {
                 tileRicevuteAccettate.getChildren().add(card);
             } else if (inAttesa) {
                 tileRicevuteAttesa.getChildren().add(card);
@@ -108,14 +122,15 @@ public class offerteController {
         }
     }
 
-    private void renderInviate(List<offertaDAO.OfferView> list) throws Exception {
+    // Renderizza le offerte inviate nelle tre colonne (accettate/attive/rifiutate).
+    private void renderInviate(List<offerta> list) throws Exception {
         tileAccettate.getChildren().clear();
         tileInviateAttive.getChildren().clear();
         tileInviateRifiutate.getChildren().clear();
 
         String matricola = Session.getMatricola();
 
-        for (offertaDAO.OfferView v : list) {
+        for (offerta v : list) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/com/example/uninaswapoobd2425/offertaCard.fxml"
             ));
@@ -124,12 +139,16 @@ public class offerteController {
             c.setData(v);
             c.showReviewButton(false);
             c.showModifyWithdraw(true);
+            c.setOnOpenDetails(() -> openDettaglio(v));
+            card.setCursor(javafx.scene.Cursor.HAND);
+            card.setPickOnBounds(true);
 
-            boolean inAttesa = v.stato == statoOfferta.in_attesa;
-            boolean rifiutata = v.stato == statoOfferta.rifiutata;
-            boolean ritirata = v.stato == statoOfferta.ritirata;
-            boolean annuncioBloccato = v.statoAnnuncio == statoAnnuncio.concluso
-                    || v.statoAnnuncio == statoAnnuncio.annullato;
+            annuncio a = v.getAnnuncio();
+            boolean inAttesa = v.getStato() == statoOfferta.in_attesa;
+            boolean rifiutata = v.getStato() == statoOfferta.rifiutata;
+            boolean ritirata = v.getStato() == statoOfferta.ritirata;
+            boolean annuncioBloccato = a != null && (a.getStato() == statoAnnuncio.concluso
+                    || a.getStato() == statoAnnuncio.annullato);
 
             boolean canModify = (inAttesa || rifiutata || ritirata) && !annuncioBloccato;
             boolean canWithdraw = inAttesa && !annuncioBloccato;
@@ -145,10 +164,11 @@ public class offerteController {
                     () -> handleRitira(v)
             );
             configureMessageButton(c, v);
+            configureEditMessageButton(c, v);
 
-            if (v.stato == statoOfferta.accettata) {
+            if (v.getStato() == statoOfferta.accettata) {
                 boolean alreadyReviewed = matricola != null && !matricola.isBlank()
-                        && hasAlreadyReviewed(v.idOfferta, matricola);
+                        && hasAlreadyReviewed(v.getIdOfferta(), matricola);
                 if (alreadyReviewed) {
                     c.showReviewButton(false);
                     c.showModifyWithdraw(false);
@@ -172,15 +192,31 @@ public class offerteController {
         }
     }
 
-    private void configureMessageButton(offertaCardController c, offertaDAO.OfferView v) {
-        boolean hasMessage = v.messaggio != null && !v.messaggio.isBlank();
-        boolean show = v.tipo == tipoAnnuncio.regalo || hasMessage;
+    // Configura il bottone messaggio in base al tipo e contenuto.
+    private void configureMessageButton(offertaCardController c, offerta v) {
+        boolean hasMessage = v.getMessaggio() != null && !v.getMessaggio().isBlank();
+        annuncio a = v.getAnnuncio();
+        boolean show = a != null && (a.getTipo() == tipoAnnuncio.regalo || hasMessage);
         c.showMessageButton(show);
         if (show) {
-            c.setOnViewMessage(() -> openMessaggioOfferta(v.messaggio));
+            c.setOnViewMessage(() -> openMessaggioOfferta(v.getMessaggio()));
         }
     }
 
+    // Configura il bottone per aggiungere/modificare il messaggio.
+    private void configureEditMessageButton(offertaCardController c, offerta v) {
+        boolean hasMessage = v.getMessaggio() != null && !v.getMessaggio().isBlank();
+        boolean isAccettata = v.getStato() == statoOfferta.accettata;
+        boolean isRitirata = v.getStato() == statoOfferta.ritirata;
+        boolean canEdit = !isAccettata && !isRitirata;
+        c.showEditMessageButton(canEdit);
+        if (canEdit) {
+            c.setEditMessageLabel(hasMessage ? "Modifica messaggio" : "Aggiungi messaggio");
+            c.setOnEditMessage(() -> handleEditMessaggio(v));
+        }
+    }
+
+    // Verifica se l'utente ha gia' recensito l'offerta.
     private boolean hasAlreadyReviewed(int idOfferta, String matricolaRecensore) {
         try (Connection conn = DB.getConnection()) {
             recensioneDAO dao = new recensioneDAO(conn);
@@ -190,35 +226,38 @@ public class offerteController {
         }
     }
 
-    private void handleRitira(offertaDAO.OfferView v) {
+    // Ritira un'offerta inviata dall'utente.
+    private void handleRitira(offerta v) {
         try (Connection conn = DB.getConnection()) {
             offertaDAO dao = new offertaDAO(conn);
-            dao.aggiornaStato(v.idOfferta, statoOfferta.ritirata);
+            dao.aggiornaStato(v.getIdOfferta(), statoOfferta.ritirata);
             loadData();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private void handleRifiuta(offertaDAO.OfferView v) {
+    // Rifiuta un'offerta ricevuta dal venditore.
+    private void handleRifiuta(offerta v) {
         try (Connection conn = DB.getConnection()) {
             offertaDAO dao = new offertaDAO(conn);
-            dao.aggiornaStato(v.idOfferta, statoOfferta.rifiutata);
+            dao.aggiornaStato(v.getIdOfferta(), statoOfferta.rifiutata);
             loadData();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private void handleAccetta(offertaDAO.OfferView v) {
+    // Accetta un'offerta e chiude l'annuncio in transazione.
+    private void handleAccetta(offerta v) {
         try (Connection conn = DB.getConnection()) {
             conn.setAutoCommit(false);
             try {
                 offertaDAO dao = new offertaDAO(conn);
-                dao.aggiornaStato(v.idOfferta, statoOfferta.accettata);
-                dao.rifiutaAltreOfferteInAttesa(v.idAnnuncio, v.idOfferta);
+                dao.aggiornaStato(v.getIdOfferta(), statoOfferta.accettata);
+                dao.rifiutaAltreOfferteInAttesa(v.getAnnuncio().getIdAnnuncio(), v.getIdOfferta());
                 try (var ps = conn.prepareStatement("UPDATE annuncio SET stato = 'concluso'::stato_annuncio_enum WHERE id_annuncio = ?")) {
-                    ps.setInt(1, v.idAnnuncio);
+                    ps.setInt(1, v.getAnnuncio().getIdAnnuncio());
                     ps.executeUpdate();
                 }
                 // Crea transazione se non esiste già per l'offerta accettata
@@ -230,8 +269,8 @@ public class offerteController {
                                   data_conclusione = EXCLUDED.data_conclusione
                 """;
                 try (var ps = conn.prepareStatement(insertTrans)) {
-                    ps.setInt(1, v.idOfferta);
-                    ps.setInt(2, v.idAnnuncio);
+                    ps.setInt(1, v.getIdOfferta());
+                    ps.setInt(2, v.getAnnuncio().getIdAnnuncio());
                     ps.executeUpdate();
                 }
                 conn.commit();
@@ -246,9 +285,71 @@ public class offerteController {
             ex.printStackTrace();
         }
     }
-    private void handleModifica(offertaDAO.OfferView v, boolean resetStatoAttesa) {
-        if (v.tipo == tipoAnnuncio.scambio) {
-            ScambioInput input = openScambioDialog(v.idOfferta);
+
+    // Apre il dettaglio annuncio in modale per una offerta.
+    private void openDettaglio(offerta v) {
+        try (Connection conn = DB.getConnection()) {
+            annuncioDAO aDao = new annuncioDAO(conn);
+            annuncio a = aDao.getAnnuncioById(v.getAnnuncio().getIdAnnuncio());
+            if (a == null) {
+                new Alert(Alert.AlertType.WARNING, "Annuncio non trovato.").showAndWait();
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/uninaswapoobd2425/dettaglioAnnuncio.fxml"
+            ));
+            Parent view = loader.load();
+            if (view instanceof Region r) {
+                r.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+            }
+            dettaglioAnnuncioController c = loader.getController();
+            c.setAnnuncioWithOffer(a, v);
+
+            StackPane overlay = findOverlay();
+            if (overlay == null) {
+                Stage stage = new Stage();
+                stage.setScene(new javafx.scene.Scene(view));
+                stage.show();
+                return;
+            }
+
+            overlay.getChildren().setAll(view);
+            StackPane.setAlignment(view, Pos.CENTER);
+            overlay.setVisible(true);
+            overlay.setManaged(true);
+            overlay.setMouseTransparent(false);
+
+            c.setOnClose(() -> closeModal(overlay));
+            overlay.setOnMouseClicked(ev -> {
+                if (ev.getTarget() == overlay) closeModal(overlay);
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    // Cerca lo StackPane overlay nella scena corrente.
+    private StackPane findOverlay() {
+        if (tileAccettate == null || tileAccettate.getScene() == null) return null;
+        Node n = tileAccettate.getScene().lookup("#modalOverlay");
+        if (n instanceof StackPane sp) return sp;
+        return null;
+    }
+
+    // Chiude la modale overlay.
+    private void closeModal(StackPane overlay) {
+        if (overlay == null) return;
+        overlay.getChildren().clear();
+        overlay.setVisible(false);
+        overlay.setManaged(false);
+        overlay.setMouseTransparent(true);
+    }
+    private void handleModifica(offerta v, boolean resetStatoAttesa) {
+        // Modifica l'offerta in base al tipo (scambio/vendita/regalo).
+        annuncio a = v.getAnnuncio();
+        if (a != null && a.getTipo() == tipoAnnuncio.scambio) {
+            ScambioInput input = openScambioDialog(v.getIdOfferta());
             if (input == null) return;
 
             try (Connection conn = DB.getConnection()) {
@@ -259,15 +360,15 @@ public class offerteController {
                 conn.setAutoCommit(false);
                 try {
                     if (resetStatoAttesa) {
-                        offDao.aggiornaImportoEMessaggioEStato(v.idOfferta, null, input.messaggio, statoOfferta.in_attesa);
+                        offDao.aggiornaImportoEMessaggioEStato(v.getIdOfferta(), null, input.messaggio, statoOfferta.in_attesa);
                     } else {
-                        offDao.aggiornaMessaggio(v.idOfferta, input.messaggio);
+                        offDao.aggiornaMessaggio(v.getIdOfferta(), input.messaggio);
                     }
-                    oggDao.deleteByOfferta(v.idOfferta);
+                    oggDao.deleteByOfferta(v.getIdOfferta());
                     int ordine = 1;
                     for (OfferItem it : input.items) {
-                        String path = imgHandler.saveImage(v.idOfferta, it.imagePath, ordine++);
-                        oggDao.insert(v.idOfferta, it.name, path);
+                        String path = imgHandler.saveImage(v.getIdOfferta(), it.imagePath, ordine++);
+                        oggDao.insert(v.getIdOfferta(), it.name, path);
                     }
                     conn.commit();
                 } catch (Exception ex) {
@@ -284,15 +385,16 @@ public class offerteController {
             return;
         }
 
-        if (v.tipo == tipoAnnuncio.vendita) {
+        if (a != null && a.getTipo() == tipoAnnuncio.vendita) {
             BigDecimal nuova = openVenditaDialog();
             if (nuova == null) return;
             try (Connection conn = DB.getConnection()) {
                 offertaDAO offDao = new offertaDAO(conn);
                 if (resetStatoAttesa) {
-                    offDao.aggiornaImportoEMessaggioEStato(v.idOfferta, nuova, null, statoOfferta.in_attesa);
+                    String msg = openMessaggioDialog(v.getMessaggio(), true);
+                    offDao.aggiornaImportoEMessaggioEStato(v.getIdOfferta(), nuova, normalizeMessage(msg), statoOfferta.in_attesa);
                 } else {
-                    offDao.aggiornaImporto(v.idOfferta, nuova);
+                    offDao.aggiornaImporto(v.getIdOfferta(), nuova);
                 }
                 loadData();
             } catch (Exception ex) {
@@ -301,15 +403,15 @@ public class offerteController {
             return;
         }
 
-        if (v.tipo == tipoAnnuncio.regalo) {
-            String msg = openMessaggioDialog();
+        if (a != null && a.getTipo() == tipoAnnuncio.regalo) {
+            String msg = openMessaggioDialog(v.getMessaggio(), false);
             if (msg == null || msg.isBlank()) return;
             try (Connection conn = DB.getConnection()) {
                 offertaDAO offDao = new offertaDAO(conn);
                 if (resetStatoAttesa) {
-                    offDao.aggiornaImportoEMessaggioEStato(v.idOfferta, null, msg, statoOfferta.in_attesa);
+                    offDao.aggiornaImportoEMessaggioEStato(v.getIdOfferta(), null, msg, statoOfferta.in_attesa);
                 } else {
-                    offDao.aggiornaMessaggio(v.idOfferta, msg);
+                    offDao.aggiornaMessaggio(v.getIdOfferta(), msg);
                 }
                 loadData();
             } catch (Exception ex) {
@@ -318,13 +420,31 @@ public class offerteController {
         }
     }
 
-    private void handleRecensione(offertaDAO.OfferView v, offertaCardController.RecensioneInput input) {
+    // Aggiorna solo il messaggio dell'offerta (se consentito dallo stato).
+    private void handleEditMessaggio(offerta v) {
+        if (v.getStato() == statoOfferta.accettata || v.getStato() == statoOfferta.ritirata) return;
+        String msg = openMessaggioDialog(v.getMessaggio(), false);
+        if (msg == null || msg.isBlank()) return;
+        try (Connection conn = DB.getConnection()) {
+            offertaDAO offDao = new offertaDAO(conn);
+            offDao.aggiornaMessaggio(v.getIdOfferta(), msg);
+            loadData();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    // Invia la recensione per un'offerta accettata.
+    private void handleRecensione(offerta v, offertaCardController.RecensioneInput input) {
         String recensore = Session.getMatricola();
         if (recensore == null || recensore.isBlank()) {
             new Alert(Alert.AlertType.WARNING, "Devi essere loggato per inviare una recensione.").showAndWait();
             return;
         }
-        if (v.matricolaVenditore == null || v.matricolaVenditore.isBlank()) {
+        String matricolaVenditore = v.getAnnuncio() != null && v.getAnnuncio().getVenditore() != null
+                ? v.getAnnuncio().getVenditore().getMatricola()
+                : null;
+        if (matricolaVenditore == null || matricolaVenditore.isBlank()) {
             new Alert(Alert.AlertType.ERROR, "Venditore non disponibile per questa offerta.").showAndWait();
             return;
         }
@@ -333,8 +453,8 @@ public class offerteController {
             recensioneDAO recDao = new recensioneDAO(conn);
             conn.setAutoCommit(false);
             try {
-                recDao.deleteByOffertaAndRecensore(v.idOfferta, recensore);
-                recDao.inserisci(v.idOfferta, recensore, v.matricolaVenditore, input.stelle, input.commento);
+                recDao.deleteByOffertaAndRecensore(v.getIdOfferta(), recensore);
+                recDao.inserisci(v.getIdOfferta(), recensore, matricolaVenditore, input.stelle, input.commento);
                 conn.commit();
             } catch (Exception ex) {
                 conn.rollback();
@@ -349,6 +469,7 @@ public class offerteController {
         }
     }
 
+    // Mostra gli oggetti allegati a un'offerta di scambio.
     private void openOggettiOfferti(int idOfferta) {
         try (Connection conn = DB.getConnection()) {
             oggettoScambioDAO dao = new oggettoScambioDAO(conn);
@@ -365,23 +486,23 @@ public class offerteController {
             VBox box = new VBox(10);
             box.setPadding(new Insets(10));
 
-            for (var it : items) {
+            for (oggettoScambio it : items) {
                 HBox row = new HBox(10);
                 row.setAlignment(Pos.CENTER_LEFT);
                 ImageView iv = new ImageView();
                 iv.setFitWidth(80);
                 iv.setFitHeight(80);
                 iv.setPreserveRatio(true);
-                if (it.path != null && !it.path.isBlank()) {
-                    File f = new File(it.path);
+                if (it.getPath() != null && !it.getPath().isBlank()) {
+                    File f = new File(it.getPath());
                     if (!f.isAbsolute()) {
-                        f = new File(System.getProperty("user.dir"), it.path);
+                        f = new File(System.getProperty("user.dir"), it.getPath());
                     }
                     if (f.exists()) {
                         iv.setImage(new Image(f.toURI().toString(), true));
                     }
                 }
-                Label name = new Label(it.nome != null ? it.nome : "(senza nome)");
+                Label name = new Label(it.getNomeOggetto() != null ? it.getNomeOggetto() : "(senza nome)");
                 name.setStyle("-fx-font-weight: bold;");
                 row.getChildren().addAll(iv, name);
                 box.getChildren().add(row);
@@ -395,6 +516,7 @@ public class offerteController {
         }
     }
 
+    // Mostra il messaggio allegato a una offerta.
     private void openMessaggioOfferta(String messaggio) {
         String testo = (messaggio == null || messaggio.isBlank())
                 ? "Nessun messaggio inserito."
@@ -406,9 +528,11 @@ public class offerteController {
         alert.showAndWait();
     }
 
-    private void handleNuovaOfferta(offertaDAO.OfferView v) {
-        if (v.tipo == tipoAnnuncio.scambio) {
-            ScambioInput input = openScambioDialog(v.idOfferta);
+    // Crea una nuova offerta (scambio/vendita/regalo).
+    private void handleNuovaOfferta(offerta v) {
+        annuncio a = v.getAnnuncio();
+        if (a != null && a.getTipo() == tipoAnnuncio.scambio) {
+            ScambioInput input = openScambioDialog(v.getIdOfferta());
             if (input == null) return;
             try (Connection conn = DB.getConnection()) {
                 offertaDAO offDao = new offertaDAO(conn);
@@ -417,7 +541,7 @@ public class offerteController {
 
                 conn.setAutoCommit(false);
                 try {
-                    int newId = offDao.creaOffertaScambio(v.idAnnuncio, Session.getMatricola(), input.messaggio);
+                    int newId = offDao.creaOffertaScambio(a.getIdAnnuncio(), Session.getMatricola(), input.messaggio);
                     int ordine = 1;
                     for (OfferItem it : input.items) {
                         String path = imgHandler.saveImage(newId, it.imagePath, ordine++);
@@ -437,7 +561,7 @@ public class offerteController {
             return;
         }
 
-        if (v.tipo == tipoAnnuncio.vendita) {
+        if (a != null && a.getTipo() == tipoAnnuncio.vendita) {
             BigDecimal nuova = openVenditaDialog();
             if (nuova == null) return;
             try (Connection conn = DB.getConnection()) {
@@ -446,7 +570,7 @@ public class offerteController {
                     VALUES (?, ?, ?::stato_offerta_enum, ?, ?, now())
                 """;
                 try (var ps = conn.prepareStatement(sql)) {
-                    ps.setInt(1, v.idAnnuncio);
+                    ps.setInt(1, a.getIdAnnuncio());
                     ps.setString(2, Session.getMatricola());
                     ps.setString(3, statoOfferta.in_attesa.name());
                     ps.setBigDecimal(4, nuova);
@@ -460,8 +584,8 @@ public class offerteController {
             return;
         }
 
-        if (v.tipo == tipoAnnuncio.regalo) {
-            String msg = openMessaggioDialog();
+        if (a != null && a.getTipo() == tipoAnnuncio.regalo) {
+            String msg = openMessaggioDialog(null, false);
             if (msg == null || msg.isBlank()) return;
             try (Connection conn = DB.getConnection()) {
                 String sql = """
@@ -469,7 +593,7 @@ public class offerteController {
                     VALUES (?, ?, ?::stato_offerta_enum, NULL, ?, now())
                 """;
                 try (var ps = conn.prepareStatement(sql)) {
-                    ps.setInt(1, v.idAnnuncio);
+                    ps.setInt(1, a.getIdAnnuncio());
                     ps.setString(2, Session.getMatricola());
                     ps.setString(3, statoOfferta.in_attesa.name());
                     ps.setString(4, msg.trim());
@@ -482,6 +606,7 @@ public class offerteController {
         }
     }
 
+    // Dialog per inserire importo offerto.
     private BigDecimal openVenditaDialog() {
         TextInputDialog d = new TextInputDialog();
         d.setTitle("Nuova offerta");
@@ -496,14 +621,25 @@ public class offerteController {
         }).orElse(null);
     }
 
-    private String openMessaggioDialog() {
-        TextInputDialog d = new TextInputDialog();
-        d.setTitle("Nuova richiesta");
+    // Dialog per inserire o modificare il messaggio offerta.
+    private String openMessaggioDialog(String current, boolean allowEmpty) {
+        TextInputDialog d = new TextInputDialog(current != null ? current : "");
+        d.setTitle("Messaggio offerta");
         d.setHeaderText(null);
         d.setContentText("Messaggio:");
-        return d.showAndWait().map(String::trim).orElse("");
+        return d.showAndWait()
+                .map(String::trim)
+                .filter(s -> allowEmpty || !s.isBlank())
+                .orElse(null);
     }
 
+    // Normalizza un messaggio: null/blank -> null.
+    private String normalizeMessage(String msg) {
+        if (msg == null || msg.isBlank()) return null;
+        return msg.trim();
+    }
+
+    // Dialog per gestire oggetti di scambio (lista + immagini).
     private ScambioInput openScambioDialog(int idOfferta) {
         Dialog<ScambioInput> dialog = new Dialog<>();
         dialog.setTitle("Offerta di scambio");
@@ -545,13 +681,13 @@ public class offerteController {
         if (idOfferta > 0) {
             try (Connection conn = DB.getConnection()) {
                 oggettoScambioDAO oggDao = new oggettoScambioDAO(conn);
-                for (oggettoScambioDAO.ScambioItem it : oggDao.getByOfferta(idOfferta)) {
-                    if (it.nome != null) {
-                        String path = it.path;
+                for (oggettoScambio it : oggDao.getByOfferta(idOfferta)) {
+                    if (it.getNomeOggetto() != null) {
+                        String path = it.getPath();
                         if (path != null && !path.isBlank() && !new java.io.File(path).isAbsolute()) {
                             path = java.nio.file.Paths.get(System.getProperty("user.dir")).resolve(path).toString();
                         }
-                        list.getItems().add(new OfferItem(it.nome, path));
+                        list.getItems().add(new OfferItem(it.getNomeOggetto(), path));
                     }
                 }
             } catch (Exception ex) {
@@ -575,6 +711,7 @@ public class offerteController {
         return dialog.showAndWait().orElse(null);
     }
 
+    // Dialog per aggiungere un singolo oggetto di scambio.
     private OfferItem openItemDialog() {
         Dialog<OfferItem> dialog = new Dialog<>();
         dialog.setTitle("Aggiungi oggetto");
@@ -667,18 +804,25 @@ public class offerteController {
     }
 
     @FXML
+    // Toggle visibilita' delle offerte ricevute in attesa.
     private void toggleRicevuteAttesa() { togglePane(tileRicevuteAttesa, btnToggleRicevuteAttesa); }
     @FXML
+    // Toggle visibilita' delle offerte ricevute accettate.
     private void toggleRicevuteAccettate() { togglePane(tileRicevuteAccettate, btnToggleRicevuteAccettate); }
     @FXML
+    // Toggle visibilita' delle offerte ricevute chiuse.
     private void toggleRicevuteChiuse() { togglePane(tileRicevuteChiuse, btnToggleRicevuteChiuse); }
     @FXML
+    // Toggle visibilita' delle offerte accettate inviate.
     private void toggleAccettate() { togglePane(tileAccettate, btnToggleAccettate); }
     @FXML
+    // Toggle visibilita' delle offerte inviate attive.
     private void toggleInviateAttive() { togglePane(tileInviateAttive, btnToggleInviateAttive); }
     @FXML
+    // Toggle visibilita' delle offerte inviate rifiutate.
     private void toggleInviateRifiutate() { togglePane(tileInviateRifiutate, btnToggleInviateRifiutate); }
 
+    // Utility: mostra/nasconde un TilePane e aggiorna l'icona del bottone.
     private void togglePane(TilePane pane, Button toggleBtn) {
         boolean newVis = !pane.isVisible();
         pane.setVisible(newVis);

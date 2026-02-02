@@ -14,6 +14,7 @@ module com.example.uninaswapoobd2425 {
     requires java.prefs;
     requires javafx.base;
     requires javafx.graphics;
+    requires jbcrypt;
 
     opens com.example.uninaswapoobd2425 to javafx.fxml;
     exports com.example.uninaswapoobd2425;

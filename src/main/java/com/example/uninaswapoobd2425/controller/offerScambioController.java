@@ -30,6 +30,7 @@ public class offerScambioController implements offerPaneController {
     private annuncio ann;
 
     @Override
+    // Inizializza la lista oggetti con cella custom.
     public void init(annuncio a) {
         this.ann = a;
         listOggetti.setItems(FXCollections.observableArrayList());
@@ -60,6 +61,7 @@ public class offerScambioController implements offerPaneController {
     }
 
     @FXML
+    // Apre un dialog per aggiungere un oggetto allo scambio.
     private void handleAdd() {
         Dialog<OfferItem> dialog = new Dialog<>();
         dialog.setTitle("Aggiungi oggetto");
@@ -134,6 +136,7 @@ public class offerScambioController implements offerPaneController {
     }
 
     @FXML
+    // Valida e invia la proposta di scambio con oggetti e messaggio.
     private void handleInvia() {
         if (listOggetti.getItems().isEmpty()) {
             new Alert(Alert.AlertType.WARNING, "Inserisci almeno un oggetto da offrire.").showAndWait();
@@ -179,6 +182,7 @@ public class offerScambioController implements offerPaneController {
         }
     }
 
+    // Inserisce l'offerta scambio e restituisce l'id.
     private int insertOfferta(Connection conn, String matricolaOfferente) throws SQLException {
         String sql = """
             INSERT INTO offerta (id_annuncio, matricola_offerente, stato, importo_proposto, messaggio)
@@ -204,6 +208,7 @@ public class offerScambioController implements offerPaneController {
         throw new SQLException("Impossibile ottenere id_offerta (RETURNING vuoto)");
     }
 
+    // Verifica se esiste gia' un'offerta attiva per questo annuncio.
     private boolean hasActiveOffer(Connection conn, String matricola) throws SQLException {
         String sql = """
             SELECT 1
@@ -220,6 +225,7 @@ public class offerScambioController implements offerPaneController {
         }
     }
 
+    // Impedisce offerte verso il proprio annuncio.
     private boolean isSelfOffer(Connection conn, String matricola) throws SQLException {
         String sql = "SELECT matricola_venditore FROM annuncio WHERE id_annuncio = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -234,6 +240,7 @@ public class offerScambioController implements offerPaneController {
         return false;
     }
 
+    // Inserisce un oggetto di scambio associato all'offerta.
     private void insertOggettoScambio(Connection conn, int idOfferta, String nomeOggetto, String path) throws SQLException {
         String sql = """
             INSERT INTO oggetto_scambio (id_offerta, nome_oggetto, path)
@@ -251,15 +258,18 @@ public class offerScambioController implements offerPaneController {
         private final String name;
         private final String imagePath;
 
+        // Costruisce un item di scambio con nome e immagine.
         public OfferItem(String name, String imagePath) {
             this.name = name;
             this.imagePath = imagePath;
         }
 
+        // Restituisce il nome dell'oggetto.
         public String getName() {
             return name;
         }
 
+        // Restituisce il path immagine selezionata.
         public String getImagePath() {
             return imagePath;
         }
