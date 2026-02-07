@@ -48,7 +48,7 @@ public class ImageHandler {
         return result;
     }
 
-    /** Risolve il path relativo DB in un file reale per caricarlo in JavaFX */
+
     // Converte un path relativo DB in path assoluto locale.
     public Path resolveToAbsolute(String dbPath) {
         // dbPath: imgAnnunci/123/...

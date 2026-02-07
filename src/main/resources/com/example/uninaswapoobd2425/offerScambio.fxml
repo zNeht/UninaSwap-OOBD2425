@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
+<VBox spacing="10" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uninaswapoobd2425.controller.offerScambioController">
 
-<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.uninaswapoobd2425.controller.offerScambioController"
-      spacing="10">
+    <Label styleClass="muted" text="Offri uno o più oggetti in scambio" />
 
-    <Label text="Offri uno o più oggetti in scambio" styleClass="muted"/>
+    <ListView fx:id="listOggetti" prefHeight="140" />
 
-    <ListView fx:id="listOggetti" prefHeight="140"/>
-
-    <HBox spacing="10">
-        <Button text="+ Aggiungi oggetto" onAction="#handleAdd" styleClass="btn-secondary"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Button text="Invia proposta di scambio" onAction="#handleInvia" styleClass="btn-primary"/>
+    <HBox alignment="CENTER" spacing="10">
+        <Button alignment="CENTER" onAction="#handleAdd" styleClass="img-button" stylesheets="@style.css" text="+ Aggiungi oggetto" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button onAction="#handleInvia" styleClass="btn-primary" stylesheets="@style.css" text="Invia proposta di scambio" />
     </HBox>
 
-    <TextField fx:id="txtDettagli" promptText="Dettagli / condizioni dello scambio (opzionale)"/>
+    <TextField fx:id="txtDettagli" promptText="Dettagli / condizioni dello scambio (opzionale)" />
 </VBox>

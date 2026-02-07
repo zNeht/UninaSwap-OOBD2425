@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -29,7 +31,7 @@
       </Label>
       <AnchorPane layoutX="45.0" layoutY="90.0" prefHeight="516.0" prefWidth="457.0" styleClass="annuncio-center-background">
          <children>
-            <VBox layoutX="25.0" layoutY="20.0" prefHeight="509.0" prefWidth="411.0">
+            <VBox layoutX="24.0" layoutY="14.0" prefHeight="475.0" prefWidth="417.0" spacing="4.0">
                <children>
                   <Label styleClass="annuncio-label" text="Titolo dell'annuncio (Max 25 caratteri)" />
                   <TextField fx:id="titoloField" />
@@ -62,7 +64,7 @@
                            </children>
                         </HBox>
 
-                        <Button fx:id="btnCaricaImmagini" mnemonicParsing="false" onAction="#onCaricaImmagini" text="Carica immagini" />
+                        <Button fx:id="btnCaricaImmagini" mnemonicParsing="false" onAction="#onCaricaImmagini" styleClass="img-button" text="Carica immagini" />
 
                         <ScrollPane fitToWidth="true" prefHeight="90.0" prefWidth="411.0">
                            <content>
@@ -81,9 +83,22 @@
                   <TextField />
                </children>
             </VBox>
-            <Button layoutX="200.0" layoutY="433.0" mnemonicParsing="false" onAction="#handlePubblicaAnnuncio" text="Pubblica" />
+            <Button layoutX="189.0" layoutY="471.0" mnemonicParsing="false" onAction="#handlePubblicaAnnuncio" text="Pubblica">
+               <styleClass>
+                  <String fx:value="access-buttons" />
+                  <String fx:value="hovering-access-button" />
+               </styleClass>
+            </Button>
          </children>
       </AnchorPane>
-      <Button fx:id="annullaButton" layoutX="492.0" layoutY="22.0" mnemonicParsing="false" onAction="#handleAnnulla" text="Button" />
+      <Button fx:id="annullaButton" layoutX="488.0" layoutY="8.0" mnemonicParsing="false" onAction="#handleAnnulla" stylesheets="@style.css" text="✕">
+         <styleClass>
+            <String fx:value="close-button" />
+            <String fx:value="title-button" />
+         </styleClass>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
    </children>
 </AnchorPane>

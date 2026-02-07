@@ -1,36 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.geometry.Insets?>
-<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.uninaswapoobd2425.controller.annuncioCardController"
-      styleClass="card"
-      spacing="8" prefWidth="200">
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefWidth="200" spacing="8" styleClass="card" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uninaswapoobd2425.controller.annuncioCardController">
 
     <StackPane>
-        <ImageView fx:id="img" fitWidth="200" fitHeight="160" preserveRatio="false"/>
-        <Label fx:id="badgeTipo" styleClass="badge" StackPane.alignment="TOP_LEFT"/>
+        <ImageView fx:id="img" fitHeight="160" fitWidth="200" preserveRatio="false" />
+        <Label fx:id="badgeTipo" styleClass="badge" StackPane.alignment="TOP_LEFT" />
     </StackPane>
 
-    <HBox spacing="6" alignment="CENTER_LEFT">
-        <Label fx:id="titolo" styleClass="card-title" HBox.hgrow="ALWAYS" maxWidth="1.0E9"/>
-        <HBox fx:id="wishlistPill" onMouseClicked="#handleWishlistPill" alignment="CENTER" spacing="4" styleClass="wishlist-pill">
-            <ToggleButton fx:id="btnWishlist" onAction="#handleWishlist" text="♡" styleClass="wishlist-btn"/>
-            <Label fx:id="lblWishlistCount" text="0" styleClass="wishlist-count"/>
+    <HBox alignment="CENTER_LEFT" spacing="6">
+        <Label fx:id="titolo" maxWidth="1.0E9" styleClass="card-title" HBox.hgrow="ALWAYS" />
+        <HBox fx:id="wishlistPill" alignment="CENTER" onMouseClicked="#handleWishlistPill" spacing="4" styleClass="wishlist-pill">
+            <ToggleButton fx:id="btnWishlist" onAction="#handleWishlist" styleClass="wishlist-btn" stylesheets="@style.css" text="♡" />
+            <Label fx:id="lblWishlistCount" styleClass="wishlist-count" text="0" />
         </HBox>
     </HBox>
-    <HBox spacing="8" alignment="CENTER_LEFT">
-        <Label fx:id="prezzo" styleClass="price" minWidth="0" textOverrun="CLIP"/>
+    <HBox alignment="CENTER_LEFT" spacing="8">
+        <Label fx:id="prezzo" minWidth="0" styleClass="price" textOverrun="CLIP" />
 
-        <Label fx:id="categoria" styleClass="chip" minWidth="0" textOverrun="CLIP"/>
+        <Label fx:id="categoria" minWidth="0" styleClass="chip" textOverrun="CLIP" />
 
     </HBox>
 
-    <Label fx:id="luogo" styleClass="muted"/>
+    <Label fx:id="luogo" styleClass="muted" />
 </VBox>

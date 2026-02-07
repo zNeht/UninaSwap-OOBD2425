@@ -1,38 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-
-
-<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.uninaswapoobd2425.controller.offerVenditaController"
-      spacing="12">
+<VBox spacing="12" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uninaswapoobd2425.controller.offerVenditaController">
 
 
     <HBox alignment="CENTER_LEFT" spacing="10" styleClass="offer-box">
-        <Label text="Prezzo richiesto:" styleClass="offer-muted"/>
-        <Label fx:id="lblRichiesto" styleClass="offer-price-strong"/>
+        <Label styleClass="offer-muted" text="Prezzo richiesto:" />
+        <Label fx:id="lblRichiesto" styleClass="offer-price-strong" />
 
-        <Region HBox.hgrow="ALWAYS"/>
+        <Region HBox.hgrow="ALWAYS" />
 
-        <Label text="€" styleClass="offer-muted"/>
-        <TextField fx:id="txtOfferta" promptText="La tua offerta" styleClass="offer-input" prefWidth="160"/>
+        <Label styleClass="offer-muted" text="€" />
+        <TextField fx:id="txtOfferta" prefWidth="160" promptText="La tua offerta" styleClass="offer-input" />
     </HBox>
 
 
-    <HBox spacing="6" alignment="CENTER_LEFT">
-        <Label text="Nota per il venditore" styleClass="offer-muted"/>
-        <Label text="(opzionale)" styleClass="offer-muted-italic"/>
+    <HBox alignment="CENTER_LEFT" spacing="6">
+        <Label styleClass="offer-muted" text="Nota per il venditore" />
+        <Label styleClass="offer-muted-italic" text="(opzionale)" />
     </HBox>
-    <TextField fx:id="txtNota" styleClass="offer-note"/>
+    <TextField fx:id="txtNota" styleClass="offer-note" />
 
 
     <HBox spacing="12">
-        <Button text="Accetta prezzo" onAction="#handleAccetta" styleClass="btn-ghost" HBox.hgrow="ALWAYS" maxWidth="1.0E9"/>
-        <Button text="Invia offerta" onAction="#handleInvia" styleClass="btn-primary" HBox.hgrow="ALWAYS" maxWidth="1.0E9"/>
+        <Button maxWidth="1.0E9" onAction="#handleAccetta" styleClass="btn-ghost" stylesheets="@style.css" text="Accetta prezzo" HBox.hgrow="ALWAYS" />
+        <Button maxWidth="1.0E9" onAction="#handleInvia" styleClass="btn-primary" stylesheets="@style.css" text="Invia offerta" HBox.hgrow="ALWAYS" />
     </HBox>
 </VBox>

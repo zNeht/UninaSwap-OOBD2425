@@ -7,7 +7,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -202,11 +201,7 @@
                      </children>
                   </HBox>
                   <Region prefHeight="101.0" prefWidth="55.0" />
-                  <StackPane prefHeight="101.0" prefWidth="462.0">
-                     <children>
-                        <TextField prefHeight="25.0" prefWidth="505.0" promptText="Cerca" styleClass="search-bar" />
-                     </children>
-                  </StackPane>
+                  <Region prefHeight="101.0" prefWidth="462.0" HBox.hgrow="ALWAYS" />
                   <Region prefHeight="101.0" prefWidth="63.0" />
                   <Button mnemonicParsing="false" onAction="#handleNuovoAnnuncio" prefHeight="43.0" prefWidth="153.0" styleClass="announce-buttons" text="+ Annuncio">
                      <cursor>
@@ -274,7 +269,6 @@
                         <Button fx:id="btnExpand" text="‹" />
                      </children>
                   </HBox>
-
                   <!-- scroll annunci -->
                   <ScrollPane fx:id="scrollAnnunci" fitToWidth="true" pannable="true" styleClass="unina-scroll" VBox.vgrow="ALWAYS">
                      <content>

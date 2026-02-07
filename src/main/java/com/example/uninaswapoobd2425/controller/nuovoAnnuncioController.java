@@ -230,7 +230,7 @@ public class nuovoAnnuncioController {
             -fx-padding: 6;
         """);
 
-        // click destro sulla miniatura per rimuovere (extra comodo)
+        // click destro sulla miniatura per rimuovere
         thumb.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.SECONDARY) {
                 removeImage(file, thumb);
@@ -282,7 +282,7 @@ public class nuovoAnnuncioController {
             }
         }
 
-        // OPPURE, se vuoi farlo più pulito risalendo la gerarchia:
+        // OPPURE si risale alla gerarchia
         // ((StackPane) annullaButton.getParent().getParent()).setVisible(false);
     }
     @FXML
@@ -301,10 +301,7 @@ public class nuovoAnnuncioController {
         String categoria = cat.name();
         String stato = "attivo";
 
-        // TODO: prendi dal tuo UI (vendita/scambio/regalo)
         String tipoSelezionato = this.tipo;
-
-        // TODO: prendi dal login/sessione
         String matricolaVenditore = getMatricolaUtenteLoggato();
 
 
