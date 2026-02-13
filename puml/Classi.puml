@@ -31,6 +31,7 @@ package "Auth/Session" as AUTH {
     +onRegisterLinkClick()
   }
   class registerController {
+    +initialize()
     +handleRegister()
     +onLoginLinkClick()
   }
@@ -38,29 +39,67 @@ package "Auth/Session" as AUTH {
 
 package "UI Controllers" as UI {
   class homepageController {
-    +caricaAnnunci(...)
-    +caricaPreferiti(...)
-    +openDettaglio(annuncio)
+    +initialize()
+    +handleNuovoAnnuncio()
+    +loadAnnunci(...)
+    +chiudiPopup()
   }
   class annuncioCardController {
-    +setData(annuncio, wishlisted, count, removeOnUnfavorite)
+    +setData(annuncio, wishlisted, wishlistCount, removeOnUnfavorite)
   }
   class dettaglioAnnuncioController {
     +setAnnuncio(annuncio)
-    +loadOfferPane(...)
+    +setAnnuncioWithOffer(annuncio, offerta)
+    +setOnClose(Runnable)
   }
   class nuovoAnnuncioController {
     +handlePubblicaAnnuncio()
     +handleAnnulla()
+    +getSelectedImages()
   }
-  class offerteController
-  class offertaCardController
-  class offerPaneController
-  class recensioniController
-  class recensioneCardController
+  class offerteController {
+    +loadData()
+    +handleAccetta(offerta)
+    +handleRifiuta(offerta)
+    +handleRitira(offerta)
+  }
+  class offerRegaloController {
+    +init(annuncio)
+    +handleInvia()
+  }
+  class offerScambioController {
+    +init(annuncio)
+    +handleAdd()
+    +handleInvia()
+  }
+  class offerVenditaController {
+    +init(annuncio)
+    +handleAccetta()
+    +handleInvia()
+  }
+  class offertaCardController {
+    +setData(offerta)
+    +setActionStates(canModify, canWithdraw)
+    +setHandlers(onModifica, onRitira)
+    +showReviewButton(show)
+    +showModifyWithdraw(show)
+    +showItemsButton(show)
+    +showMessageButton(show)
+    +showEditMessageButton(show)
+    +setOnOpenDetails(handler)
+    +setOnRecensisci(handler)
+  }
+  class offerPaneController {
+    +init(annuncio)
+  }
+  class recensioniController {
+    +loadData()
+  }
+  class recensioneCardController {
+    +setData(recensione, ricevuta)
+  }
   class statisticheController {
     +loadData()
-    +renderPie(...)
   }
 }
 
@@ -69,29 +108,45 @@ package "DAO" as DAO {
     +getConnection()
   }
   class annuncioDAO {
-    +getAnnunciAttiviConImgPrincipale(...)
+    +getAnnunciAttiviConImgPrincipaleByTipo(tipo)
+    +getAnnunciAttiviConImgPrincipaleByTipoAndCategoria(tipo, categoria)
+    +getAnnunciPreferitiByUtente(matricola)
+    +getAnnunciPreferitiByUtenteAndCategoria(matricola, categoria)
+    +getAnnuncioById(idAnnuncio)
     +insertAnnuncioReturningId(...)
   }
   class immagineAnnuncioDAO {
-    +insertImages(...)
-    +getImagesByAnnuncio(id)
+    +insertImages(idAnnuncio, imgs)
+    +getImagesByAnnuncio(idAnnuncio)
   }
   class offertaDAO {
     +getOfferteRicevute(matricolaVenditore)
     +getOfferteInviate(matricolaOfferente)
-    +aggiornaMessaggio(idOfferta, msg)
     +aggiornaStato(idOfferta, stato)
+    +rifiutaAltreOfferteInAttesa(idAnnuncio, idOffertaAccettata)
+    +creaOffertaScambio(idAnnuncio, matricola, messaggio)
+    +aggiornaImportoEMessaggioEStato(idOfferta, importo, messaggio, stato)
   }
   class wishlistDAO {
     +add(idAnnuncio, idUtente)
     +remove(idAnnuncio, idUtente)
     +exists(idAnnuncio, idUtente)
+    +countForAnnuncio(idAnnuncio)
   }
   class recensioniDAO {
     +getRicevute(matricola)
     +getInviate(matricola)
   }
-  class oggettoScambioDAO
+  class recensioneDAO {
+    +deleteByOffertaAndRecensore(idOfferta, matricolaRecensore)
+    +inserisci(idOfferta, matricolaRecensore, matricolaRecensito, voto, commento)
+    +existsByOffertaAndRecensore(idOfferta, matricolaRecensore)
+  }
+  class oggettoScambioDAO {
+    +getByOfferta(idOfferta)
+    +insert(idOfferta, nome, path)
+    +deleteByOfferta(idOfferta)
+  }
   class statisticheDAO {
     +getStatistiche(matricola)
   }
@@ -153,6 +208,9 @@ offerteController --> offertaDAO
 offertaCardController --> offerta
 offerPaneController --> offertaDAO
 offerPaneController --> ScambioImageHandler
+offerRegaloController ..|> offerPaneController
+offerScambioController ..|> offerPaneController
+offerVenditaController ..|> offerPaneController
 
 recensioniController --> recensioniDAO
 recensioneCardController --> recensione

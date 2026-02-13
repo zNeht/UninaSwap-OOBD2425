@@ -360,7 +360,7 @@ public class annuncioDAO {
     public int insertAnnuncioReturningId(
             String titolo,
             String descrizione,
-            BigDecimal prezzo,      // <-- BigDecimal
+            BigDecimal prezzo,
             Date data,
             String matricolaVenditore,
             String categoria,

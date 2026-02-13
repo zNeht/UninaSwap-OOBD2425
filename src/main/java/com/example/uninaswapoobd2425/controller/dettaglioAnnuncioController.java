@@ -3,6 +3,7 @@ package com.example.uninaswapoobd2425.controller;
 import com.example.uninaswapoobd2425.dao.DB;
 import com.example.uninaswapoobd2425.dao.immagineAnnuncioDAO;
 import com.example.uninaswapoobd2425.dao.oggettoScambioDAO;
+import com.example.uninaswapoobd2425.model.Session;
 import com.example.uninaswapoobd2425.model.annuncio;
 import com.example.uninaswapoobd2425.model.immagineAnnuncio;
 import com.example.uninaswapoobd2425.model.offerta;
@@ -10,26 +11,34 @@ import com.example.uninaswapoobd2425.model.oggettoScambio;
 import com.example.uninaswapoobd2425.model.tipoAnnuncio;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.Region;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
+import java.math.BigDecimal;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class dettaglioAnnuncioController {
     @FXML private StackPane dialogRoot;
@@ -45,6 +54,7 @@ public class dettaglioAnnuncioController {
     @FXML private Label lblLuogo;
     @FXML private Label lblVenditore;
     @FXML private Label lblVenditoreEmail;
+    @FXML private Button btnDeleteAnnuncio;
 
     @FXML private VBox offerActionBox;
     @FXML private VBox offerContainer;
@@ -56,6 +66,7 @@ public class dettaglioAnnuncioController {
     private annuncio currentAnnuncio;
     private Image fallbackImage;
     private Runnable onClose = () -> {};
+    private Runnable onDeleted = () -> {};
 
     //Bind immagine - di 28 px e nascondo le freccie per cambiare immagine
     @FXML
@@ -68,6 +79,8 @@ public class dettaglioAnnuncioController {
 
     // Imposta la callback di chiusura per la modale.
     public void setOnClose(Runnable r) { this.onClose = r; }
+    // Imposta la callback dopo eliminazione annuncio.
+    public void setOnDeleted(Runnable r) { this.onDeleted = r; }
 
     @FXML
     // Chiude la modale tramite callback.
@@ -100,13 +113,71 @@ public class dettaglioAnnuncioController {
         loadOfferPane(a);
         clearOfferDetail();
         showOfferActionBox(true);
+        updateDeleteVisibility(a);
     }
     //Visualizzazione deggli annunci tramite offerta
-    // Mostra l'annuncio in modalita "solo dettaglio" con offerta associata.
     public void setAnnuncioWithOffer(annuncio a, offerta offer) {
         setAnnuncio(a);
         showOfferDetail(offer);
         showOfferActionBox(false);
+    }
+
+    // Mostra il bottone rimozione solo al venditore.
+    private void updateDeleteVisibility(annuncio a) {
+        if (btnDeleteAnnuncio == null) return;
+        String me = Session.getMatricola();
+        String venditore = a != null && a.getVenditore() != null ? a.getVenditore().getMatricola() : null;
+        boolean canDelete = me != null && venditore != null && me.equalsIgnoreCase(venditore);
+        btnDeleteAnnuncio.setVisible(canDelete);
+        btnDeleteAnnuncio.setManaged(canDelete);
+    }
+
+    @FXML
+    // Rimuove (annulla) l'annuncio se l'utente e' il venditore.
+    private void handleDeleteAnnuncio() {
+        if (currentAnnuncio == null) return;
+        String me = Session.getMatricola();
+        String venditore = currentAnnuncio.getVenditore() != null ? currentAnnuncio.getVenditore().getMatricola() : null;
+        if (me == null || venditore == null || !me.equalsIgnoreCase(venditore)) {
+            return;
+        }
+
+        javafx.scene.control.Alert confirm = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Rimuovi annuncio");
+        confirm.setHeaderText("Sei sicuro di voler rimuovere l'annuncio?");
+        confirm.setContentText("L'annuncio verra' annullato e non sara' piu' visibile.");
+        var result = confirm.showAndWait();
+        if (result.isEmpty() || result.get() != javafx.scene.control.ButtonType.OK) {
+            return;
+        }
+
+        try (Connection conn = DB.getConnection()) {
+            conn.setAutoCommit(false);
+            try (var ps = conn.prepareStatement(
+                    "UPDATE annuncio SET stato = 'annullato'::stato_annuncio_enum WHERE id_annuncio = ? AND matricola_venditore = ?")) {
+                ps.setInt(1, currentAnnuncio.getIdAnnuncio());
+                ps.setString(2, me);
+                int updated = ps.executeUpdate();
+                if (updated == 0) {
+                    conn.rollback();
+                    new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING, "Operazione non consentita.").showAndWait();
+                    return;
+                }
+            }
+            try (var ps = conn.prepareStatement(
+                    "UPDATE offerta SET stato = 'rifiutata'::stato_offerta_enum WHERE id_annuncio = ? AND stato = 'in_attesa'::stato_offerta_enum")) {
+                ps.setInt(1, currentAnnuncio.getIdAnnuncio());
+                ps.executeUpdate();
+            }
+            conn.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR, "Errore durante la rimozione.").showAndWait();
+            return;
+        }
+
+        onDeleted.run();
+        onClose.run();
     }
 
 
@@ -148,7 +219,6 @@ public class dettaglioAnnuncioController {
         toggleArrows(immagini.size() > 1);
     }
     //Si assicura che la immagine del annuncio sia nella prima posizione (0)
-    // Porta l'immagine principale in testa alla lista se presente.
     private void ensureMainFirst(String mainPath) {
         if (mainPath == null || mainPath.isBlank()) return;
         int idx = -1;
@@ -169,7 +239,7 @@ public class dettaglioAnnuncioController {
             immagini.add(0, img);
         }
     }
-    //Mostra le immagini con comportamento circolare
+
     // Mostra l'immagine all'indice richiesto con wrap circolare.
     private void showImageAt(int index) {
         if (immagini.isEmpty()) {
@@ -181,7 +251,6 @@ public class dettaglioAnnuncioController {
         String path = immagini.get(currentImageIndex).getPath();
         imgMain.setImage(loadImage(path));
     }
-    //Converte il percorso in un oggetto Image
     // Risolve path relativo/assoluto e carica l'immagine (fallback se manca).
     private Image loadImage(String dbPath) {
         if (dbPath == null || dbPath.isBlank()) {
@@ -199,7 +268,7 @@ public class dettaglioAnnuncioController {
 
         return getFallbackImage();
     }
-    //Mostra o no le freccie per cambiare immagine
+
     // Abilita/disabilita i pulsanti di navigazione immagini.
     private void toggleArrows(boolean show) {
         if (btnPrevImg != null && btnNextImg != null) {
@@ -209,12 +278,11 @@ public class dettaglioAnnuncioController {
             btnNextImg.setManaged(show);
         }
     }
-    //Imposta immagine di default
     // Mostra l'immagine di fallback.
     private void showFallback() {
         imgMain.setImage(getFallbackImage());
     }
-    //Carica un pezzo di UI diverso in base al annuncio
+
     // Carica il pannello offerta corretto in base al tipo annuncio.
     private void loadOfferPane(annuncio a) {
         offerContainer.getChildren().clear();
@@ -249,8 +317,7 @@ public class dettaglioAnnuncioController {
         offerDetailBox.setManaged(false);
     }
 
-    //Mostra i dettagli in base al tipo dell offerta
-    // Renderizza i dettagli dell'offerta nella modale.
+    //Mostra i dettagli in base al tipo dell offerta (QUESTO E' PER OFFERTE INVIATE/RICEVUTE)
     private void showOfferDetail(offerta offer) {
         if (offerDetailBox == null || offerDetailContent == null) return;
         offerDetailContent.getChildren().clear();
@@ -413,6 +480,58 @@ public class dettaglioAnnuncioController {
         stage.show();
 
         pane.setOnMouseClicked(e -> stage.close());
+    }
+
+    @FXML
+    // Mostra la descrizione completa in una finestra custom (stile recensione).
+    private void handleShowDescription() {
+        String text = lblDescrizione != null ? lblDescrizione.getText() : null;
+        if (text == null || text.isBlank()) return;
+
+        Stage owner = (Stage) dialogRoot.getScene().getWindow();
+        Stage stage = new Stage(StageStyle.UNDECORATED);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(owner);
+
+        BorderPane root = new BorderPane();
+        root.setPadding(new Insets(14));
+        root.setStyle("-fx-background-color: #F7F2EA; -fx-background-radius: 18; -fx-border-radius: 18; -fx-border-color: rgba(0,0,0,0.10); -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 18, 0.22, 0, 6);");
+
+        Label title = new Label("Descrizione completa");
+        title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2B2B2B;");
+
+        TextArea area = new TextArea(text);
+        area.setWrapText(true);
+        area.setEditable(false);
+        area.setPrefRowCount(10);
+        area.setPrefColumnCount(42);
+        area.setStyle("-fx-background-color: transparent; -fx-control-inner-background: #FFF9F2; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-color: rgba(0,0,0,0.08);");
+
+        Button btnClose = new Button("Chiudi");
+        btnClose.getStyleClass().add("btn-ghost");
+        btnClose.setOnAction(e -> stage.close());
+        btnClose.setPrefWidth(140);
+        btnClose.setMinWidth(140);
+
+        HBox buttons = new HBox(12, new Region(), btnClose);
+        HBox.setHgrow(buttons.getChildren().get(0), Priority.ALWAYS);
+
+        VBox content = new VBox(12, title, area, buttons);
+        root.setCenter(content);
+
+        Scene scene = new Scene(root, 520, 360);
+        String css = Optional.ofNullable(getClass().getResource("/com/example/uninaswapoobd2425/style.css"))
+                .map(URL::toExternalForm)
+                .orElse(null);
+        if (css != null) scene.getStylesheets().add(css);
+        stage.setScene(scene);
+
+        if (owner != null) {
+            stage.setX(owner.getX() + (owner.getWidth() - scene.getWidth()) / 2);
+            stage.setY(owner.getY() + (owner.getHeight() - scene.getHeight()) / 2);
+        }
+
+        stage.showAndWait();
     }
 
     // Restituisce l'immagine di fallback caricata una sola volta.

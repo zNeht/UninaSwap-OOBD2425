@@ -551,6 +551,7 @@ public class homepageController {
             dettaglioAnnuncioController c = loader.getController();
             c.setAnnuncio(a);
             c.setOnClose(this::closeModal);
+            c.setOnDeleted(this::refreshCurrentView);
 
             modalOverlay.getChildren().setAll(view);
             modalOverlay.setVisible(true);
@@ -565,6 +566,11 @@ public class homepageController {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    // Ricarica la vista corrente dopo una modifica agli annunci.
+    private void refreshCurrentView() {
+        filtraPerCategoria(categoriaSelezionata);
     }
 
     // Chiude la modale di dettaglio.

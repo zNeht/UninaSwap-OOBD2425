@@ -807,6 +807,21 @@
     -fx-padding: 12 14;
     -fx-cursor: hand;
 }
+.btn-compact {
+    -fx-padding: 8 12;
+    -fx-font-size: 13px;
+}
+.btn-danger {
+    -fx-background-color: #C43D3D;
+    -fx-background-radius: 18;
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-padding: 10 12;
+    -fx-cursor: hand;
+}
+.btn-danger:hover {
+    -fx-background-color: #B03737;
+}
 .info-pill {
     -fx-background-color: rgba(0,0,0,0.06);
     -fx-background-radius: 14;

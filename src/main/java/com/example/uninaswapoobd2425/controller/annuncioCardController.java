@@ -112,9 +112,13 @@ public class annuncioCardController {
                 dao.remove(ann.getIdAnnuncio(), matricola);
             }
         } catch (Exception ex) {
-            new Alert(Alert.AlertType.ERROR, "Errore durante l'aggiornamento dei preferiti.").showAndWait();
+            String msg = ex.getMessage() != null ? ex.getMessage() : "";
+            if (msg.contains("Non puoi aggiungere ai preferiti un tuo annuncio")) {
+                new Alert(Alert.AlertType.WARNING, "Non puoi aggiungere ai preferiti un tuo annuncio.").showAndWait();
+            } else {
+                new Alert(Alert.AlertType.ERROR, "Errore durante l'aggiornamento dei preferiti.").showAndWait();
+            }
             revertWishlist();
-            ex.printStackTrace();
             return;
         }
 

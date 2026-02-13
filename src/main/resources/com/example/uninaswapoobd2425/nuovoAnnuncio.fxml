@@ -31,14 +31,14 @@
       </Label>
       <AnchorPane layoutX="45.0" layoutY="90.0" prefHeight="516.0" prefWidth="457.0" styleClass="annuncio-center-background">
          <children>
-            <VBox layoutX="24.0" layoutY="14.0" prefHeight="475.0" prefWidth="417.0" spacing="4.0">
+            <VBox layoutX="24.0" layoutY="14.0" prefHeight="419.0" prefWidth="419.0" spacing="5.0">
                <children>
                   <Label styleClass="annuncio-label" text="Titolo dell'annuncio (Max 25 caratteri)" />
                   <TextField fx:id="titoloField" />
                   <Label styleClass="annuncio-label" text="Categoria" />
                   <ComboBox fx:id="categoriaCombo" prefHeight="36.0" prefWidth="411.0" styleClass="unina-combo" />
                   <Label styleClass="annuncio-label" text="Descrizione" />
-                  <TextArea fx:id="descrizioneArea" prefHeight="59.0" prefWidth="411.0" />
+                  <TextArea fx:id="descrizioneArea" prefHeight="59.0" prefWidth="411.0" promptText="Specifiche del prodotto, Luogo di vendita, Metodi di contatto etc..." />
                   <HBox alignment="CENTER_LEFT" spacing="10">
                      <Label styleClass="annuncio-label" text="Prezzo" />
                      <HBox alignment="CENTER_LEFT" spacing="6">
@@ -78,12 +78,9 @@
 
                      </children>
                   </VBox>
-
-                  <Label styleClass="annuncio-label" text="Informazioni extra" />
-                  <TextField />
                </children>
             </VBox>
-            <Button layoutX="189.0" layoutY="471.0" mnemonicParsing="false" onAction="#handlePubblicaAnnuncio" text="Pubblica">
+            <Button layoutX="185.0" layoutY="453.0" mnemonicParsing="false" onAction="#handlePubblicaAnnuncio" text="Pubblica">
                <styleClass>
                   <String fx:value="access-buttons" />
                   <String fx:value="hovering-access-button" />
