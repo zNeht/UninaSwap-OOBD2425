@@ -1,7 +1,6 @@
 
 BEGIN;
 
--- Enum types
 CREATE TYPE public.categoria_annuncio_enum AS ENUM (
   'libri',
   'informatica',
